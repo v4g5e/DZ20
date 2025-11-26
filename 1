@@ -1,0 +1,812 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp4
+{
+    internal class Program
+    {
+        static void Main()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nВыберите задачу для демонстрации (1-15):");
+                Console.WriteLine("1. Animal -> Cat");
+                Console.WriteLine("2. Vehicle -> Car, Bus");
+                Console.WriteLine("3. Shape -> Circle, Rectangle");
+                Console.WriteLine("4-5. Переопределение метода + конструктор с base");
+                Console.WriteLine("6. Employee -> Manager, Developer");
+                Console.WriteLine("7-8. Person -> Student + protected поля");
+                Console.WriteLine("9-10. GeometricShape + метод базового класса");
+                Console.WriteLine("11. Абстрактный класс DatabaseEntity");
+                Console.WriteLine("12. Виртуальный метод Notification");
+                Console.WriteLine("13. Mammal -> Dog, Dolphin");
+                Console.WriteLine("14. Интерфейсы IPrintable, IScannable");
+                Console.WriteLine("15. Множественная иерархия LivingBeing -> Human -> Programmer");
+                Console.WriteLine("0. Все задачи последовательно");
+
+                Console.Write("Ваш выбор: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DemonstrateTask1();
+                        break;
+                    case "2":
+                        DemonstrateTask2();
+                        break;
+                    case "3":
+                        DemonstrateTask3();
+                        break;
+                    case "4":
+                    case "5":
+                        DemonstrateTask4_5();
+                        break;
+                    case "6":
+                        DemonstrateTask6();
+                        break;
+                    case "7":
+                    case "8":
+                        DemonstrateTask7_8();
+                        break;
+                    case "9":
+                    case "10":
+                        DemonstrateTask9_10();
+                        break;
+                    case "11":
+                        DemonstrateTask11();
+                        break;
+                    case "12":
+                        DemonstrateTask12();
+                        break;
+                    case "13":
+                        DemonstrateTask13();
+                        break;
+                    case "14":
+                        DemonstrateTask14();
+                        break;
+                    case "15":
+                        DemonstrateTask15();
+                        break;
+                    case "0":
+                        DemonstrateAllTasks();
+                        break;
+                    default:
+                        Console.WriteLine("Неверный выбор, попробуйте снова");
+                        break;
+                }
+            }
+        }
+
+        static void DemonstrateTask1()
+        {
+            Console.WriteLine("\n=== ЗАДАЧА 1: Animal -> Cat ===");
+            Animal animal = new Animal("Неизвестное животное");
+            Cat cat = new Cat("Мурзик");
+
+            animal.MakeSound();
+            cat.MakeSound();
+        }
+
+        static void DemonstrateTask2()
+        {
+            Console.WriteLine("\n=== ЗАДАЧА 2: Vehicle -> Car, Bus ===");
+            Car car = new Car("Toyota", 220, 4);
+            Bus bus = new Bus("Mercedes", 120, 50);
+
+            car.DisplayInfo();
+            bus.DisplayInfo();
+        }
+
+        static void DemonstrateTask3()
+        {
+            Console.WriteLine("\n=== ЗАДАЧА 3: Shape -> Circle, Rectangle ===");
+            Circle circle = new Circle("Красный", 7.5);
+            Rectangle rectangle = new Rectangle("Синий", 8.0, 12.0);
+
+            circle.Display();
+            rectangle.Display();
+        }
+
+        static void DemonstrateTask4_5()
+        {
+            Console.WriteLine("\n=== ЗАДАЧИ 4-5: Переопределение метода + конструктор с base ===");
+            Device device = new Device("Устройство X100");
+            Smartphone phone = new Smartphone("Samsung Galaxy", "Android");
+
+            device.TurnOn();
+            phone.TurnOn();
+        }
+
+        static void DemonstrateTask6()
+        {
+            Console.WriteLine("\n=== ЗАДАЧА 6: Employee -> Manager, Developer ===");
+            Manager manager = new Manager("Анна", 150000, "IT");
+            Developer developer = new Developer("Михаил", 120000, "C#");
+
+            manager.Work();
+            manager.DisplayInfo();
+            developer.Work();
+            developer.DisplayInfo();
+        }
+
+        static void DemonstrateTask7_8()
+        {
+            Console.WriteLine("\n=== ЗАДАЧИ 7-8: Person -> Student + protected поля ===");
+            Student student = new Student("Алексей", 20, "МГУ", 3);
+            student.Introduce();
+            student.Study();
+            student.HaveBirthday(); 
+        }
+
+        static void DemonstrateTask9_10()
+        {
+            Console.WriteLine("\n=== ЗАДАЧИ 9-10: GeometricShape + метод базового класса ===");
+            Triangle triangle = new Triangle(3, 4, 5);
+            Square square = new Square(6);
+
+            triangle.DisplayInfo();
+            square.DisplayInfo();
+        }
+
+        static void DemonstrateTask11()
+        {
+            Console.WriteLine("\n=== ЗАДАЧА 11: Абстрактный класс DatabaseEntity ===");
+            User user = new User(1, "ivanov");
+            user.DisplayId();
+            user.Save();
+            user.Load();
+        }
+
+        static void DemonstrateTask12()
+        {
+            Console.WriteLine("\n=== ЗАДАЧА 12: Виртуальный метод Notification ===");
+            Notification notif1 = new Notification("Иван Иванов");
+            EmailNotification notif2 = new EmailNotification("Петр Петров", "petr@mail.com");
+            SMSNotification notif3 = new SMSNotification("Мария", "+79161234567");
+
+            notif1.Send();
+            notif2.Send();
+            notif3.Send();
+        }
+
+        static void DemonstrateTask13()
+        {
+            Console.WriteLine("\n=== ЗАДАЧА 13: Mammal -> Dog, Dolphin ===");
+            Dog dog = new Dog("Лабрадор");
+            Dolphin dolphin = new Dolphin();
+
+            dog.Eat();
+            dog.Sleep();
+            dog.Bark();
+
+            dolphin.Eat();
+            dolphin.Sleep();
+            dolphin.Swim();
+        }
+
+        static void DemonstrateTask14()
+        {
+            Console.WriteLine("\n=== ЗАДАЧА 14: Интерфейсы IPrintable, IScannable ===");
+            MultifunctionPrinter printer = new MultifunctionPrinter("Canon MX500");
+
+            printer.Print();
+            Console.WriteLine(printer.GetDocumentInfo());
+            printer.Scan();
+            printer.SaveScan("document1.pdf");
+        }
+
+        static void DemonstrateTask15()
+        {
+            Console.WriteLine("\n=== ЗАДАЧА 15: Множественная иерархия ===");
+            Programmer programmer = new Programmer("Сергей", "C#");
+
+            programmer.Breathe();
+            programmer.Think();
+            programmer.Code();
+        }
+
+        static void DemonstrateAllTasks()
+        {
+            Console.WriteLine("\n=== ПОСЛЕДОВАТЕЛЬНАЯ ДЕМОНСТРАЦИЯ ВСЕХ 15 ЗАДАЧ ===\n");
+
+            DemonstrateTask1();
+            DemonstrateTask2();
+            DemonstrateTask3();
+            DemonstrateTask4_5();
+            DemonstrateTask6();
+            DemonstrateTask7_8();
+            DemonstrateTask9_10();
+            DemonstrateTask11();
+            DemonstrateTask12();
+            DemonstrateTask13();
+            DemonstrateTask14();
+            DemonstrateTask15();
+
+            Console.WriteLine("\n=== ВСЕ ЗАДАЧИ УСПЕШНО ПРОДЕМОНСТРИРОВАНЫ ===");
+        }
+    }
+    class Animal
+    {
+        protected string name;
+
+        public Animal(string name)
+        {
+            this.name = name;
+            Console.WriteLine($"Создано животное: {name}");
+        }
+
+        public virtual void MakeSound()
+        {
+            Console.WriteLine("Животное издает звук");
+        }
+    }
+
+    class Cat : Animal
+    {
+        public Cat(string name) : base(name)
+        {
+            Console.WriteLine($"Создан кот: {name}");
+        }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{name} говорит: Мяу-мяу!");
+        }
+    }
+
+    class Vehicle
+    {
+        protected string brand;
+        protected int maxSpeed;
+
+        public Vehicle(string brand, int maxSpeed)
+        {
+            this.brand = brand;
+            this.maxSpeed = maxSpeed;
+        }
+
+        public virtual void DisplayInfo()
+        {
+            Console.WriteLine($"Транспортное средство: {brand}, Макс. скорость: {maxSpeed} км/ч");
+        }
+    }
+
+    class Car : Vehicle
+    {
+        private int doors;
+
+        public Car(string brand, int maxSpeed, int doors) : base(brand, maxSpeed)
+        {
+            this.doors = doors;
+        }
+
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Автомобиль {brand}, {doors} дверей, Макс. скорость: {maxSpeed} км/ч");
+        }
+    }
+
+    class Bus : Vehicle
+    {
+        private int passengerCapacity;
+
+        public Bus(string brand, int maxSpeed, int passengerCapacity) : base(brand, maxSpeed)
+        {
+            this.passengerCapacity = passengerCapacity;
+        }
+
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Автобус {brand}, Вместимость: {passengerCapacity} пассажиров, Макс. скорость: {maxSpeed} км/ч");
+        }
+    }
+
+    class Shape
+    {
+        protected string color;
+
+        public Shape(string color)
+        {
+            this.color = color;
+        }
+
+        public virtual double CalculateArea()
+        {
+            return 0;
+        }
+
+        public virtual void Display()
+        {
+            Console.WriteLine($"Фигура цвета: {color}");
+        }
+    }
+
+    class Circle : Shape
+    {
+        private double radius;
+
+        public Circle(string color, double radius) : base(color)
+        {
+            this.radius = radius;
+        }
+
+        public override double CalculateArea()
+        {
+            return Math.PI * radius * radius;
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Круг: цвет {color}, радиус {radius}, площадь {CalculateArea():F2}");
+        }
+    }
+
+    class Rectangle : Shape
+    {
+        protected double width;
+        protected double height;
+
+        public Rectangle(string color, double width, double height) : base(color)
+        {
+            this.width = width;
+            this.height = height;
+        }
+
+        public override double CalculateArea()
+        {
+            return width * height;
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Прямоугольник: цвет {color}, размер {width}x{height}, площадь {CalculateArea():F2}");
+        }
+    }
+
+    class Device
+    {
+        protected string model;
+
+        public Device(string model)
+        {
+            this.model = model;
+            Console.WriteLine($"Базовый конструктор Device: {model}");
+        }
+
+        public virtual void TurnOn()
+        {
+            Console.WriteLine($"Устройство {model} включено");
+        }
+    }
+
+    class Smartphone : Device
+    {
+        private string os;
+
+        public Smartphone(string model, string os) : base(model)
+        {
+            this.os = os;
+            Console.WriteLine($"Производный конструктор Smartphone: {model}, OS: {os}");
+        }
+
+        public override void TurnOn()
+        {
+            Console.WriteLine($"Смартфон {model} с OS {os} загружается...");
+        }
+    }
+
+    class Employee
+    {
+        protected string name;
+        protected decimal salary;
+
+        public Employee(string name, decimal salary)
+        {
+            this.name = name;
+            this.salary = salary;
+        }
+
+        public virtual void Work()
+        {
+            Console.WriteLine($"{name} выполняет общие задачи");
+        }
+
+        public virtual void DisplayInfo()
+        {
+            Console.WriteLine($"Сотрудник: {name}, Зарплата: {salary:C}");
+        }
+    }
+
+    class Manager : Employee
+    {
+        private string department;
+
+        public Manager(string name, decimal salary, string department) : base(name, salary)
+        {
+            this.department = department;
+        }
+
+        public override void Work()
+        {
+            Console.WriteLine($"{name} управляет отделом {department}");
+        }
+
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Менеджер: {name}, Отдел: {department}, Зарплата: {salary:C}");
+        }
+    }
+
+    class Developer : Employee
+    {
+        private string programmingLanguage;
+
+        public Developer(string name, decimal salary, string programmingLanguage) : base(name, salary)
+        {
+            this.programmingLanguage = programmingLanguage;
+        }
+
+        public override void Work()
+        {
+            Console.WriteLine($"{name} пишет код на {programmingLanguage}");
+        }
+
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Разработчик: {name}, Язык: {programmingLanguage}, Зарплата: {salary:C}");
+        }
+    }
+
+    class Person
+    {
+        protected string name;
+        protected int age;
+
+        public Person(string name, int age)
+        {
+            this.name = name;
+            this.age = age;
+        }
+
+        public virtual void Introduce()
+        {
+            Console.WriteLine($"Привет, я {name}, мне {age} лет");
+        }
+
+        protected void CelebrateBirthday()
+        {
+            age++;
+            Console.WriteLine($"{name} празднует день рождения! Теперь ему {age} лет");
+        }
+    }
+
+    class Student : Person
+    {
+        private string university;
+        private int year;
+
+        public Student(string name, int age, string university, int year) : base(name, age)
+        {
+            this.university = university;
+            this.year = year;
+        }
+
+        public override void Introduce()
+        {
+            Console.WriteLine($"Я студент {name}, учусь в {university} на {year} курсе");
+        }
+
+        public void Study()
+        {
+            Console.WriteLine($"{name} усердно учится");
+        }
+
+        public void HaveBirthday()
+        {
+            CelebrateBirthday(); 
+        }
+    }
+
+    abstract class GeometricShape
+    {
+        protected string name;
+
+        public GeometricShape(string name)
+        {
+            this.name = name;
+        }
+
+        public abstract double GetArea();
+        public abstract double GetPerimeter();
+
+        public void DisplayInfo() 
+        {
+            Console.WriteLine($"{name}: Площадь = {GetArea():F2}, Периметр = {GetPerimeter():F2}");
+        }
+    }
+
+    class Triangle : GeometricShape
+    {
+        private double sideA, sideB, sideC;
+
+        public Triangle(double a, double b, double c) : base("Треугольник")
+        {
+            sideA = a;
+            sideB = b;
+            sideC = c;
+        }
+
+        public override double GetArea()
+        {
+            double p = (sideA + sideB + sideC) / 2;
+            return Math.Sqrt(p * (p - sideA) * (p - sideB) * (p - sideC));
+        }
+
+        public override double GetPerimeter()
+        {
+            return sideA + sideB + sideC;
+        }
+    }
+
+    class Square : GeometricShape
+    {
+        private double side;
+
+        public Square(double side) : base("Квадрат")
+        {
+            this.side = side;
+        }
+
+        public override double GetArea()
+        {
+            return side * side;
+        }
+
+        public override double GetPerimeter()
+        {
+            return 4 * side;
+        }
+    }
+
+    abstract class DatabaseEntity
+    {
+        protected int id;
+
+        public DatabaseEntity(int id)
+        {
+            this.id = id;
+        }
+
+        public abstract void Save();
+        public abstract void Load();
+
+        public void DisplayId()
+        {
+            Console.WriteLine($"ID: {id}");
+        }
+    }
+
+    class User : DatabaseEntity
+    {
+        private string username;
+
+        public User(int id, string username) : base(id)
+        {
+            this.username = username;
+        }
+
+        public override void Save()
+        {
+            Console.WriteLine($"Пользователь {username} (ID: {id}) сохранен в базу данных");
+        }
+
+        public override void Load()
+        {
+            Console.WriteLine($"Пользователь {username} (ID: {id}) загружен из базы данных");
+        }
+    }
+
+    class Notification
+    {
+        protected string recipient;
+
+        public Notification(string recipient)
+        {
+            this.recipient = recipient;
+        }
+
+        public virtual void Send()
+        {
+            Console.WriteLine($"Отправлено уведомление для: {recipient}");
+        }
+    }
+
+    class EmailNotification : Notification
+    {
+        private string email;
+
+        public EmailNotification(string recipient, string email) : base(recipient)
+        {
+            this.email = email;
+        }
+
+        public override void Send()
+        {
+            Console.WriteLine($"Отправлено email уведомление на адрес: {email} для: {recipient}");
+        }
+    }
+
+    class SMSNotification : Notification
+    {
+        private string phoneNumber;
+
+        public SMSNotification(string recipient, string phoneNumber) : base(recipient)
+        {
+            this.phoneNumber = phoneNumber;
+        }
+
+        public override void Send()
+        {
+            Console.WriteLine($"Отправлено SMS на номер: {phoneNumber} для: {recipient}");
+        }
+    }
+
+    class Mammal
+    {
+        protected string species;
+        protected bool hasFur;
+
+        public Mammal(string species, bool hasFur)
+        {
+            this.species = species;
+            this.hasFur = hasFur;
+        }
+
+        public virtual void Eat()
+        {
+            Console.WriteLine($"{species} питается");
+        }
+
+        public virtual void Sleep()
+        {
+            Console.WriteLine($"{species} спит");
+        }
+    }
+
+    class Dog : Mammal
+    {
+        private string breed;
+
+        public Dog(string breed) : base("Собака", true)
+        {
+            this.breed = breed;
+        }
+
+        public override void Eat()
+        {
+            Console.WriteLine($"Собака породы {breed} ест корм");
+        }
+
+        public void Bark()
+        {
+            Console.WriteLine($"Собака породы {breed} лает: Гав-гав!");
+        }
+    }
+
+    class Dolphin : Mammal
+    {
+        public Dolphin() : base("Дельфин", false) { }
+
+        public override void Eat()
+        {
+            Console.WriteLine("Дельфин ест рыбу");
+        }
+
+        public void Swim()
+        {
+            Console.WriteLine("Дельфин плавает в океане");
+        }
+    }
+
+    interface IPrintable
+    {
+        void Print();
+        string GetDocumentInfo();
+    }
+
+    interface IScannable
+    {
+        void Scan();
+        void SaveScan(string filename);
+    }
+
+    class MultifunctionPrinter : IPrintable, IScannable
+    {
+        private string model;
+
+        public MultifunctionPrinter(string model)
+        {
+            this.model = model;
+        }
+
+        public void Print()
+        {
+            Console.WriteLine($"Принтер {model} печатает документ");
+        }
+
+        public string GetDocumentInfo()
+        {
+            return $"Документ готов к печати на {model}";
+        }
+
+        public void Scan()
+        {
+            Console.WriteLine($"Принтер {model} сканирует документ");
+        }
+
+        public void SaveScan(string filename)
+        {
+            Console.WriteLine($"Скан сохранен как: {filename}");
+        }
+    }
+
+    class LivingBeing
+    {
+        protected string name;
+
+        public LivingBeing(string name)
+        {
+            this.name = name;
+        }
+
+        public virtual void Breathe()
+        {
+            Console.WriteLine($"{name} дышит");
+        }
+    }
+
+    class Human : LivingBeing
+    {
+        protected string occupation;
+
+        public Human(string name, string occupation) : base(name)
+        {
+            this.occupation = occupation;
+        }
+
+        public override void Breathe()
+        {
+            Console.WriteLine($"{name} ({occupation}) дышит воздухом");
+        }
+
+        public void Think()
+        {
+            Console.WriteLine($"{name} размышляет");
+        }
+    }
+
+    class Programmer : Human
+    {
+        private string programmingLanguage;
+
+        public Programmer(string name, string programmingLanguage) : base(name, "Программист")
+        {
+            this.programmingLanguage = programmingLanguage;
+        }
+
+        public override void Breathe()
+        {
+            Console.WriteLine($"{name} (Программист на {programmingLanguage}) дышит кофейными парами");
+        }
+
+        public void Code()
+        {
+            Console.WriteLine($"{name} пишет код на {programmingLanguage}");
+        }
+    }
+}

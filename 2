@@ -1,0 +1,585 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp4
+{
+    internal class Program
+    {
+        static void Main()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nВыберите демонстрацию (1-15):");
+                Console.WriteLine("1. Приватное поле + публичное свойство");
+                Console.WriteLine("2. Protected поле + доступ из наследника");
+                Console.WriteLine("3. Internal класс");
+                Console.WriteLine("4. Protected internal поле");
+                Console.WriteLine("5. Публичное поле + изменение извне");
+                Console.WriteLine("6. Private модификатор защиты");
+                Console.WriteLine("7. Protected метод + вызов из наследника");
+                Console.WriteLine("8. Защищённый конструктор");
+                Console.WriteLine("9. Internal класс в сборке");
+                Console.WriteLine("10. Ошибка доступа к приватному полю");
+                Console.WriteLine("11. Open-класс с public методами");
+                Console.WriteLine("12. Закрытый метод");
+                Console.WriteLine("13. Internal vs Public классы");
+                Console.WriteLine("14. Protected internal метод");
+                Console.WriteLine("15. Доступ к приватному свойству через метод");
+                Console.WriteLine("0. Все демонстрации");
+
+                Console.Write("Ваш выбор: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DemonstratePrivateFieldWithPublicProperty();
+                        break;
+                    case "2":
+                        DemonstrateProtectedField();
+                        break;
+                    case "3":
+                        DemonstrateInternalClass();
+                        break;
+                    case "4":
+                        DemonstrateProtectedInternal();
+                        break;
+                    case "5":
+                        DemonstratePublicField();
+                        break;
+                    case "6":
+                        DemonstratePrivateProtection();
+                        break;
+                    case "7":
+                        DemonstrateProtectedMethod();
+                        break;
+                    case "8":
+                        DemonstrateProtectedConstructor();
+                        break;
+                    case "9":
+                        DemonstrateInternalInAssembly();
+                        break;
+                    case "10":
+                        DemonstratePrivateAccessError();
+                        break;
+                    case "11":
+                        DemonstratePublicClass();
+                        break;
+                    case "12":
+                        DemonstratePrivateMethod();
+                        break;
+                    case "13":
+                        DemonstrateInternalVsPublic();
+                        break;
+                    case "14":
+                        DemonstrateProtectedInternalMethod();
+                        break;
+                    case "15":
+                        DemonstratePrivatePropertyAccess();
+                        break;
+                    case "0":
+                        DemonstrateAll();
+                        break;
+                    default:
+                        Console.WriteLine("Неверный выбор, попробуйте снова");
+                        break;
+                }
+            }
+        }
+
+        static void DemonstratePrivateFieldWithPublicProperty()
+        {
+            Console.WriteLine("\n=== 1. Приватное поле + публичное свойство ===");
+
+            BankAccount account = new BankAccount("123456789", 1000m);
+            Console.WriteLine($"Счет: {account.AccountNumber}, Баланс: {account.Balance}");
+
+            account.Deposit(500m);
+            Console.WriteLine($"После пополнения: {account.Balance}");
+
+            bool success = account.Withdraw(200m);
+            Console.WriteLine($"Снятие 200: {(success ? "Успешно" : "Недостаточно средств")}, Баланс: {account.Balance}");
+
+            // account.Balance = -100; // Ошибка компиляции - setter private
+        }
+
+        static void DemonstrateProtectedField()
+        {
+            Console.WriteLine("\n=== 2. Protected поле + доступ из наследника ===");
+
+            Car car = new Car("Toyota", "Camry", 2022, 4);
+            car.DisplayInfo();
+
+            // Доступ к protected полю через публичный метод наследника
+            car.ChangeManufacturer("Honda");
+            car.ShowManufacturer(); // Вызов protected метода через публичный метод
+            car.DisplayInfo();
+        }
+
+        static void DemonstrateInternalClass()
+        {
+            Console.WriteLine("\n=== 3. Internal класс ===");
+
+            // InternalClass internalClass = new InternalClass(); // Доступно только в этой сборке
+            // Console.WriteLine(internalClass.Message);
+
+            AssemblyHelper helper = new AssemblyHelper();
+            helper.UseInternalClass(); // Использование internal класса через public метод
+        }
+
+        static void DemonstrateProtectedInternal()
+        {
+            Console.WriteLine("\n=== 4. Protected internal поле ===");
+
+            Manager manager = new Manager("Иван", "M001", 75000, "IT");
+            manager.DisplayEmployeeInfo();
+
+            // Доступ к protected internal полю из наследника
+            manager.ChangeEmployeeId("M002");
+            manager.DisplayEmployeeInfo();
+
+            Employee emp = new Employee("Петр", "E001", 50000);
+            emp.employeeId = "E002"; // Доступ к protected internal полю из той же сборки
+            emp.DisplayEmployeeInfo();
+        }
+
+        static void DemonstratePublicField()
+        {
+            Console.WriteLine("\n=== 5. Публичное поле + изменение извне ===");
+
+            AccessModifiersDemo demo = new AccessModifiersDemo();
+            Console.WriteLine($"Исходное значение: {demo.PublicField}");
+
+            demo.PublicField = "Измененное значение извне";
+            Console.WriteLine($"После изменения: {demo.PublicField}");
+        }
+
+        static void DemonstratePrivateProtection()
+        {
+            Console.WriteLine("\n=== 6. Private модификатор защиты ===");
+
+            AccessModifiersDemo demo = new AccessModifiersDemo();
+
+            // Console.WriteLine(demo.privateField); // Ошибка компиляции - private поле недоступно
+            Console.WriteLine($"Доступ к приватному полю через метод: {demo.GetPrivateField()}");
+
+            Console.WriteLine($"Секретный код: {demo.GetSecretCode()}"); // Не показываем реальный код
+        }
+
+        static void DemonstrateProtectedMethod()
+        {
+            Console.WriteLine("\n=== 7. Protected метод + вызов из наследника ===");
+
+            Car car = new Car("BMW", "X5", 2023, 5);
+            car.ShowManufacturer(); // Вызовет protected метод через публичный метод
+        }
+
+        static void DemonstrateProtectedConstructor()
+        {
+            Console.WriteLine("\n=== 8. Защищённый конструктор ===");
+
+            // Vehicle vehicle = new Vehicle("Ford", "Focus"); // Ошибка - protected конструктор
+            Car car = new Car("Ford", "Focus", 2023, 4); // OK - через public конструктор наследника
+            car.DisplayInfo();
+        }
+
+        static void DemonstrateInternalInAssembly()
+        {
+            Console.WriteLine("\n=== 9. Internal класс в сборке ===");
+
+            DatabaseHelper dbHelper = new DatabaseHelper();
+            dbHelper.Connect(); // Доступно в той же сборке
+
+            InternalClass internalClass = new InternalClass();
+            Console.WriteLine(internalClass.Message); // Доступно в той же сборке
+        }
+
+        static void DemonstratePrivateAccessError()
+        {
+            Console.WriteLine("\n=== 10. Ошибка доступа к приватному полю ===");
+
+            AccessModifiersDemo demo = new AccessModifiersDemo();
+
+            try
+            {
+                demo.SetSecretCode(""); // Пустой код - вызовет исключение
+            }
+            catch (AccessViolationException ex)
+            {
+                Console.WriteLine($"Ошибка доступа: {ex.Message}");
+            }
+
+            try
+            {
+                demo.SetSecretCode("12"); // Слишком короткий код
+            }
+            catch (AccessViolationException ex)
+            {
+                Console.WriteLine($"Ошибка доступа: {ex.Message}");
+            }
+
+            demo.SetSecretCode("789"); // Успешное изменение
+        }
+
+        static void DemonstratePublicClass()
+        {
+            Console.WriteLine("\n=== 11. Open-класс с public методами ===");
+
+            Calculator calc = new Calculator();
+            Console.WriteLine($"5 + 3 = {calc.Add(5, 3)}");
+            Console.WriteLine($"5 * 3 = {calc.Multiply(5, 3)}");
+        }
+
+        static void DemonstratePrivateMethod()
+        {
+            Console.WriteLine("\n=== 12. Закрытый метод ===");
+
+            AccessModifiersDemo demo = new AccessModifiersDemo();
+            demo.PublicMethod(); // Внутри этого метода вызывается приватный метод
+
+            // demo.InternalProcess(); // Ошибка компиляции - приватный метод недоступен
+        }
+
+        static void DemonstrateInternalVsPublic()
+        {
+            Console.WriteLine("\n=== 13. Internal vs Public классы ===");
+
+            PublicLogger publicLogger = new PublicLogger();
+            publicLogger.Log("Сообщение из public класса");
+
+            InternalLogger internalLogger = new InternalLogger();
+            internalLogger.Log("Сообщение из internal класса");
+
+            Console.WriteLine("Public класс доступен из других сборок");
+            Console.WriteLine("Internal класс доступен только в этой сборке");
+        }
+
+        static void DemonstrateProtectedInternalMethod()
+        {
+            Console.WriteLine("\n=== 14. Protected internal метод ===");
+
+            AccessModifiersDemo demo = new AccessModifiersDemo();
+            demo.SpecialOperation(); // Доступно в той же сборке
+
+            Employee emp = new Employee("Сергей", "E003", 60000);
+            emp.DisplayEmployeeInfo(); // protected internal метод
+        }
+
+        static void DemonstratePrivatePropertyAccess()
+        {
+            Console.WriteLine("\n=== 15. Доступ к приватному свойству через метод ===");
+
+            Vehicle vehicle = new Car("Audi", "A4", 2023, 4);
+            Console.WriteLine($"VIN код: {vehicle.GetVIN()}"); // Доступ к приватному полю через метод
+
+            BankAccount account = new BankAccount("987654321", 2000m);
+            Console.WriteLine($"Баланс через свойство: {account.Balance}");
+            // account.Balance = 3000; // Ошибка - setter private
+            account.Deposit(1000); // Изменение через публичный метод
+            Console.WriteLine($"Баланс после пополнения: {account.Balance}");
+        }
+
+        static void DemonstrateAll()
+        {
+            Console.WriteLine("\n=== ПОЛНАЯ ДЕМОНСТРАЦИЯ ВСЕХ МОДИФИКАТОРОВ ДОСТУПА ===\n");
+
+            DemonstratePrivateFieldWithPublicProperty();
+            DemonstrateProtectedField();
+            DemonstrateInternalClass();
+            DemonstrateProtectedInternal();
+            DemonstratePublicField();
+            DemonstratePrivateProtection();
+            DemonstrateProtectedMethod();
+            DemonstrateProtectedConstructor();
+            DemonstrateInternalInAssembly();
+            DemonstratePrivateAccessError();
+            DemonstratePublicClass();
+            DemonstratePrivateMethod();
+            DemonstrateInternalVsPublic();
+            DemonstrateProtectedInternalMethod();
+            DemonstratePrivatePropertyAccess();
+
+            Console.WriteLine("\n=== ВСЕ ДЕМОНСТРАЦИИ ЗАВЕРШЕНЫ ===");
+        }
+    }
+    internal class InternalClass
+    {
+        public string Message = "Это internal класс";
+    }
+
+    internal class DatabaseHelper
+    {
+        public void Connect()
+        {
+            Console.WriteLine("Подключение к базе данных...");
+        }
+    }
+
+    public class Calculator
+    {
+        public int Add(int a, int b)
+        {
+            return a + b;
+        }
+
+        public int Multiply(int a, int b)
+        {
+            return a * b;
+        }
+    }
+
+    public class BankAccount
+    {
+        private decimal balance; 
+
+        public decimal Balance
+        {
+            get { return balance; }
+            private set
+            {
+                if (value >= 0)
+                    balance = value;
+                else
+                    throw new ArgumentException("Баланс не может быть отрицательным");
+            }
+        }
+
+        public string AccountNumber { get; private set; }
+
+        public BankAccount(string accountNumber, decimal initialBalance)
+        {
+            AccountNumber = accountNumber;
+            Balance = initialBalance;
+        }
+
+        public void Deposit(decimal amount)
+        {
+            if (amount > 0)
+                Balance += amount;
+        }
+
+        public bool Withdraw(decimal amount)
+        {
+            if (amount > 0 && Balance >= amount)
+            {
+                Balance -= amount;
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class Vehicle
+    {
+        protected string manufacturer; 
+        private string vin;
+        internal int year;
+        public string Model { get; set; }
+
+        protected Vehicle(string manufacturer, string model)
+        {
+            this.manufacturer = manufacturer;
+            this.Model = model;
+            this.vin = GenerateVIN();
+        }
+
+        public Vehicle(string manufacturer, string model, int year)
+            : this(manufacturer, model)
+        {
+            this.year = year;
+        }
+
+        protected virtual string GenerateVIN()
+        {
+            return Guid.NewGuid().ToString().Substring(0, 13).ToUpper();
+        }
+
+        protected void DisplayManufacturerInfo()
+        {
+            Console.WriteLine($"Производитель: {manufacturer}");
+        }
+
+        public virtual void DisplayInfo()
+        {
+            Console.WriteLine($"Транспорт: {manufacturer} {Model}, Год: {year}");
+        }
+
+        public string GetVIN()
+        {
+            return vin;
+        }
+    }
+
+    public class Car : Vehicle
+    {
+        public int Doors { get; set; }
+
+        public Car(string manufacturer, string model, int year, int doors)
+            : base(manufacturer, model, year)
+        {
+            this.Doors = doors;
+        }
+
+        public void ChangeManufacturer(string newManufacturer)
+        {
+            manufacturer = newManufacturer; 
+        }
+
+        public void ShowManufacturer()
+        {
+            DisplayManufacturerInfo(); 
+        }
+
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Автомобиль: {manufacturer} {Model}, Дверей: {Doors}, Год: {year}");
+        }
+    }
+
+    public class Employee
+    {
+        protected internal string employeeId; 
+        private decimal salary;
+        public string Name { get; set; }
+
+        public Employee(string name, string employeeId, decimal salary)
+        {
+            this.Name = name;
+            this.employeeId = employeeId;
+            this.salary = salary;
+        }
+
+        private void ValidateSalary(decimal amount)
+        {
+            if (amount < 0)
+                throw new ArgumentException("Зарплата не может быть отрицательной");
+        }
+
+        public void SetSalary(decimal newSalary)
+        {
+            ValidateSalary(newSalary);
+            salary = newSalary;
+        }
+
+        public decimal GetSalary()
+        {
+            return salary;
+        }
+
+        protected internal virtual void DisplayEmployeeInfo()
+        {
+            Console.WriteLine($"Сотрудник: {Name}, ID: {employeeId}");
+        }
+    }
+
+    public class Manager : Employee
+    {
+        public string Department { get; set; }
+
+        public Manager(string name, string employeeId, decimal salary, string department)
+            : base(name, employeeId, salary)
+        {
+            this.Department = department;
+        }
+
+        public void ChangeEmployeeId(string newId)
+        {
+            employeeId = newId; 
+        }
+
+        protected internal override void DisplayEmployeeInfo()
+        {
+            Console.WriteLine($"Менеджер: {Name}, ID: {employeeId}, Отдел: {Department}");
+        }
+    }
+
+    public class PublicLogger
+    {
+        public void Log(string message)
+        {
+            Console.WriteLine($"PUBLIC LOG: {message}");
+        }
+    }
+
+    internal class InternalLogger
+    {
+        public void Log(string message)
+        {
+            Console.WriteLine($"INTERNAL LOG: {message}");
+        }
+    }
+
+    public class AccessModifiersDemo
+    {
+        public string PublicField = "Публичное поле";
+
+        private string privateField = "Приватное поле";
+
+        private string secretCode = "12345";
+
+        public AccessModifiersDemo()
+        {
+            Console.WriteLine("Создан экземпляр AccessModifiersDemo");
+        }
+
+        public string GetPrivateField()
+        {
+            return privateField;
+        }
+
+        public void SetSecretCode(string newCode)
+        {
+            if (string.IsNullOrEmpty(newCode))
+                throw new AccessViolationException("Код не может быть пустым!");
+
+            if (newCode.Length < 3)
+                throw new AccessViolationException("Код должен содержать минимум 3 символа!");
+
+            secretCode = newCode;
+            Console.WriteLine("Код успешно изменен");
+        }
+
+        public string GetSecretCode()
+        {
+            return "***"; 
+        }
+
+        // 12. Закрытый метод
+        private void InternalProcess()
+        {
+            Console.WriteLine("Внутренняя обработка данных...");
+        }
+
+        public void PublicMethod()
+        {
+            InternalProcess(); 
+            Console.WriteLine("Публичный метод выполнен");
+        }
+
+        protected internal void SpecialOperation()
+        {
+            Console.WriteLine("Специальная операция выполнена");
+        }
+    }
+
+    public class AssemblyHelper
+    {
+        internal void InternalOperation()
+        {
+            Console.WriteLine("Internal операция в той же сборке");
+        }
+
+        public void UseInternalClass()
+        {
+            InternalClass internalClass = new InternalClass();
+            Console.WriteLine(internalClass.Message);
+
+            DatabaseHelper dbHelper = new DatabaseHelper();
+            dbHelper.Connect();
+        }
+    }
+}

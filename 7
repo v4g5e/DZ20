@@ -1,0 +1,668 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp4
+{
+    using System;
+    public interface IFlyable
+    {
+        void Fly();
+    }
+
+    public interface ISwimmable
+    {
+        void Swim();
+    }
+
+    public class Animal
+    {
+        public string Name { get; set; }
+
+        public Animal(string name)
+        {
+            Name = name;
+        }
+
+        public virtual void MakeSound()
+        {
+            Console.WriteLine($"{Name} издает звук");
+        }
+    }
+
+    public class Dog : Animal
+    {
+        public Dog(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} лает: Гав-гав!");
+        }
+
+        public void Fetch()
+        {
+            Console.WriteLine($"{Name} приносит палку");
+        }
+    }
+
+    public class Bird : Animal, IFlyable
+    {
+        public Bird(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} чирикает: Чик-чирик!");
+        }
+
+        public void Fly()
+        {
+            Console.WriteLine($"{Name} летает в небе");
+        }
+    }
+
+    public class Fish : Animal, ISwimmable
+    {
+        public Fish(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} издает булькающие звуки");
+        }
+
+        public void Swim()
+        {
+            Console.WriteLine($"{Name} плавает в воде");
+        }
+    }
+
+    public class Duck : Animal, IFlyable, ISwimmable
+    {
+        public Duck(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} крякает: Кря-кря!");
+        }
+
+        public void Fly()
+        {
+            Console.WriteLine($"{Name} летает невысоко");
+        }
+
+        public void Swim()
+        {
+            Console.WriteLine($"{Name} плавает в пруду");
+        }
+    }
+
+    public class Vehicle
+    {
+        public string Brand { get; set; }
+
+        public Vehicle(string brand)
+        {
+            Brand = brand;
+        }
+
+        public virtual void Move()
+        {
+            Console.WriteLine($"{Brand} двигается");
+        }
+    }
+
+    public class Car : Vehicle
+    {
+        public Car(string brand) : base(brand) { }
+
+        public override void Move()
+        {
+            Console.WriteLine($"{Brand} едет по дороге");
+        }
+
+        public void Honk()
+        {
+            Console.WriteLine($"{Brand} сигналит: Би-бип!");
+        }
+    }
+
+    public class Boat : Vehicle, ISwimmable
+    {
+        public Boat(string brand) : base(brand) { }
+
+        public override void Move()
+        {
+            Console.WriteLine($"{Brand} плывет по воде");
+        }
+
+        public void Swim()
+        {
+            Console.WriteLine($"{Brand} плавает как лодка");
+        }
+    }
+
+    public class Airplane : Vehicle, IFlyable
+    {
+        public Airplane(string brand) : base(brand) { }
+
+        public override void Move()
+        {
+            Console.WriteLine($"{Brand} летит по воздуху");
+        }
+
+        public void Fly()
+        {
+            Console.WriteLine($"{Brand} летит на большой высоте");
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nВыберите демонстрацию (1-10):");
+                Console.WriteLine("1. Оператор is для проверки типа");
+                Console.WriteLine("2. Оператор as для приведения типа");
+                Console.WriteLine("3. Проверка объекта на принадлежность типу через is");
+                Console.WriteLine("4. Оператор as для безопасного кастинга");
+                Console.WriteLine("5. As для получения null при ошибке");
+                Console.WriteLine("6. Логика обработки null после приведения через as");
+                Console.WriteLine("7. Cast и обработка исключений");
+                Console.WriteLine("8. Методы интерфейса после приведения as");
+                Console.WriteLine("9. Проверка типа и вызов специфичного метода");
+                Console.WriteLine("10. Сравнение работы is и as");
+                Console.WriteLine("0. Все демонстрации");
+
+                Console.Write("Ваш выбор: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DemonstrateIsOperator();
+                        break;
+                    case "2":
+                        DemonstrateAsOperator();
+                        break;
+                    case "3":
+                        DemonstrateTypeCheckWithIs();
+                        break;
+                    case "4":
+                        DemonstrateSafeCastingWithAs();
+                        break;
+                    case "5":
+                        DemonstrateAsReturnsNull();
+                        break;
+                    case "6":
+                        DemonstrateNullHandlingAfterAs();
+                        break;
+                    case "7":
+                        DemonstrateCastWithExceptionHandling();
+                        break;
+                    case "8":
+                        DemonstrateInterfaceMethodsAfterAs();
+                        break;
+                    case "9":
+                        DemonstrateTypeCheckAndSpecificMethod();
+                        break;
+                    case "10":
+                        DemonstrateIsVsAsComparison();
+                        break;
+                    case "0":
+                        DemonstrateAll();
+                        break;
+                    default:
+                        Console.WriteLine("Неверный выбор, попробуйте снова");
+                        break;
+                }
+            }
+        }
+
+        static void DemonstrateIsOperator()
+        {
+            Console.WriteLine("\n=== 1. ОПЕРАТОР IS ДЛЯ ПРОВЕРКИ ТИПА ===");
+
+            Animal dog = new Dog("Рекс");
+            Animal bird = new Bird("Кеша");
+            Animal fish = new Fish("Немо");
+
+            Console.WriteLine("Проверка типов с оператором is:");
+
+            if (dog is Dog)
+            {
+                Console.WriteLine("dog является Dog");
+            }
+
+            if (bird is Bird)
+            {
+                Console.WriteLine("bird является Bird");
+            }
+
+            if (fish is Fish)
+            {
+                Console.WriteLine("fish является Fish");
+            }
+
+            if (dog is Bird)
+            {
+                Console.WriteLine("dog является Bird");
+            }
+            else
+            {
+                Console.WriteLine("dog не является Bird");
+            }
+
+            if (bird is IFlyable)
+            {
+                Console.WriteLine("bird реализует IFlyable");
+            }
+        }
+
+        static void DemonstrateAsOperator()
+        {
+            Console.WriteLine("\n=== 2. ОПЕРАТОР AS ДЛЯ ПРИВЕДЕНИЯ ТИПА ===");
+
+            Animal animal1 = new Dog("Барсик");
+            Animal animal2 = new Bird("Чижик");
+
+            Dog dog = animal1 as Dog;
+            if (dog != null)
+            {
+                Console.WriteLine("Приведение animal1 к Dog успешно:");
+                dog.Fetch();
+            }
+
+            Bird bird = animal2 as Bird;
+            if (bird != null)
+            {
+                Console.WriteLine("Приведение animal2 к Bird успешно:");
+                bird.Fly();
+            }
+
+            Fish fish = animal1 as Fish;
+            if (fish == null)
+            {
+                Console.WriteLine("Приведение animal1 к Fish вернуло null");
+            }
+        }
+
+        static void DemonstrateTypeCheckWithIs()
+        {
+            Console.WriteLine("\n=== 3. ПРОВЕРКА ОБЪЕКТА НА ПРИНАДЛЕЖНОСТЬ ТИПУ ЧЕРЕЗ IS ===");
+
+            List<Animal> animals = new List<Animal>
+        {
+            new Dog("Шарик"),
+            new Bird("Попугай"),
+            new Fish("Золотая рыбка"),
+            new Duck("Кряква"),
+            new Dog("Бобик")
+        };
+
+            Console.WriteLine("Проверка типов животных:");
+
+            foreach (Animal animal in animals)
+            {
+                Console.WriteLine($"\n{animal.Name}:");
+
+                if (animal is Dog)
+                {
+                    Console.WriteLine("  - Это собака");
+                }
+
+                if (animal is Bird)
+                {
+                    Console.WriteLine("  - Это птица");
+                }
+
+                if (animal is Fish)
+                {
+                    Console.WriteLine("  - Это рыба");
+                }
+
+                if (animal is IFlyable)
+                {
+                    Console.WriteLine("  - Может летать");
+                }
+
+                if (animal is ISwimmable)
+                {
+                    Console.WriteLine("  - Может плавать");
+                }
+            }
+        }
+
+        static void DemonstrateSafeCastingWithAs()
+        {
+            Console.WriteLine("\n=== 4. ОПЕРАТОР AS ДЛЯ БЕЗОПАСНОГО КАСТИНГА ===");
+
+            Vehicle car = new Car("Toyota");
+            Vehicle boat = new Boat("Yamaha");
+            Vehicle airplane = new Airplane("Boeing");
+
+            Console.WriteLine("Безопасное приведение с as:");
+
+            Car carCast = car as Car;
+            if (carCast != null)
+            {
+                carCast.Honk();
+            }
+
+            Boat boatCast = boat as Boat;
+            if (boatCast != null)
+            {
+                boatCast.Swim();
+            }
+
+            Airplane airplaneCast = airplane as Airplane;
+            if (airplaneCast != null)
+            {
+                airplaneCast.Fly();
+            }
+
+            Car invalidCast = boat as Car;
+            if (invalidCast == null)
+            {
+                Console.WriteLine("Приведение Boat к Car вернуло null - безопасно!");
+            }
+        }
+
+        static void DemonstrateAsReturnsNull()
+        {
+            Console.WriteLine("\n=== 5. AS ДЛЯ ПОЛУЧЕНИЯ NULL ПРИ ОШИБКЕ ===");
+
+            Animal dog = new Dog("Рекс");
+            Animal bird = new Bird("Кеша");
+
+            Console.WriteLine("As возвращает null при невозможности приведения:");
+
+            Fish fishFromDog = dog as Fish;
+            Console.WriteLine($"dog as Fish: {fishFromDog?.Name ?? "null"}");
+
+            Dog dogFromBird = bird as Dog;
+            Console.WriteLine($"bird as Dog: {dogFromBird?.Name ?? "null"}");
+
+            Bird birdFromBird = bird as Bird;
+            Console.WriteLine($"bird as Bird: {birdFromBird?.Name ?? "null"}");
+
+            IFlyable flyableFromDog = dog as IFlyable;
+            Console.WriteLine($"dog as IFlyable: {(flyableFromDog != null ? "не null" : "null")}");
+
+            IFlyable flyableFromBird = bird as IFlyable;
+            Console.WriteLine($"bird as IFlyable: {(flyableFromBird != null ? "не null" : "null")}");
+        }
+
+        static void DemonstrateNullHandlingAfterAs()
+        {
+            Console.WriteLine("\n=== 6. ЛОГИКА ОБРАБОТКИ NULL ПОСЛЕ ПРИВЕДЕНИЯ ЧЕРЕЗ AS ===");
+
+            object[] objects = {
+            new Dog("Барсик"),
+            "Просто строка",
+            42,
+            new Bird("Соловей"),
+            new List<int>(),
+            new Fish("Акула")
+        };
+
+            Console.WriteLine("Обработка разных объектов после as:");
+
+            foreach (object obj in objects)
+            {
+                Animal animal = obj as Animal;
+                if (animal != null)
+                {
+                    Console.WriteLine($"Объект {obj.GetType().Name}: {animal.Name}");
+                    animal.MakeSound();
+                }
+                else
+                {
+                    Console.WriteLine($"Объект {obj.GetType().Name}: не является Animal");
+                }
+
+                IFlyable flyable = obj as IFlyable;
+                if (flyable != null)
+                {
+                    Console.WriteLine("  Может летать!");
+                    flyable.Fly();
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+        static void DemonstrateCastWithExceptionHandling()
+        {
+            Console.WriteLine("\n=== 7. CAST И ОБРАБОТКА ИСКЛЮЧЕНИЙ ===");
+
+            Animal dog = new Dog("Рекс");
+            Animal bird = new Bird("Кеша");
+
+            Console.WriteLine("Прямое приведение с обработкой исключений:");
+
+            try
+            {
+                Dog dogCast = (Dog)dog;
+                Console.WriteLine("(Dog)dog успешно:");
+                dogCast.Fetch();
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine($"Ошибка приведения: {ex.Message}");
+            }
+
+            try
+            {
+                Fish fishCast = (Fish)dog;
+                Console.WriteLine("(Fish)dog успешно:");
+                fishCast.Swim();
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine($"Ошибка приведения dog к Fish: {ex.Message}");
+            }
+
+            try
+            {
+                Bird birdCast = (Bird)bird;
+                Console.WriteLine("(Bird)bird успешно:");
+                birdCast.Fly();
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine($"Ошибка приведения: {ex.Message}");
+            }
+
+            try
+            {
+                Dog invalidCast = (Dog)bird;
+                Console.WriteLine("(Dog)bird успешно:");
+                invalidCast.Fetch();
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine($"Ошибка приведения bird к Dog: {ex.Message}");
+            }
+        }
+
+        static void DemonstrateInterfaceMethodsAfterAs()
+        {
+            Console.WriteLine("\n=== 8. МЕТОДЫ ИНТЕРФЕЙСА ПОСЛЕ ПРИВЕДЕНИЯ AS ===");
+
+            Animal duck = new Duck("Дональд");
+            Vehicle boat = new Boat("Катер");
+            Vehicle airplane = new Airplane("Самолет");
+
+            Console.WriteLine("Использование методов интерфейса после as:");
+
+            IFlyable flyableDuck = duck as IFlyable;
+            if (flyableDuck != null)
+            {
+                Console.WriteLine("Утка может летать:");
+                flyableDuck.Fly();
+            }
+
+            ISwimmable swimmableDuck = duck as ISwimmable;
+            if (swimmableDuck != null)
+            {
+                Console.WriteLine("Утка может плавать:");
+                swimmableDuck.Swim();
+            }
+
+            IFlyable flyablePlane = airplane as IFlyable;
+            if (flyablePlane != null)
+            {
+                Console.WriteLine("Самолет может летать:");
+                flyablePlane.Fly();
+            }
+
+            ISwimmable swimmableBoat = boat as ISwimmable;
+            if (swimmableBoat != null)
+            {
+                Console.WriteLine("Лодка может плавать:");
+                swimmableBoat.Swim();
+            }
+
+            IFlyable flyableBoat = boat as IFlyable;
+            if (flyableBoat == null)
+            {
+                Console.WriteLine("Лодка не может летать - as вернул null");
+            }
+        }
+
+        static void DemonstrateTypeCheckAndSpecificMethod()
+        {
+            Console.WriteLine("\n=== 9. ПРОВЕРКА ТИПА И ВЫЗОВ СПЕЦИФИЧНОГО МЕТОДА ===");
+
+            List<Vehicle> vehicles = new List<Vehicle>
+        {
+            new Car("Mercedes"),
+            new Boat("Yamaha"),
+            new Airplane("Airbus"),
+            new Car("BMW"),
+            new Boat("SeaRay")
+        };
+
+            Console.WriteLine("Проверка типа и вызов специфичных методов:");
+
+            foreach (Vehicle vehicle in vehicles)
+            {
+                Console.WriteLine($"\n{vehicle.Brand}:");
+                vehicle.Move();
+
+                if (vehicle is Car car)
+                {
+                    car.Honk();
+                }
+
+                if (vehicle is Boat boat)
+                {
+                    boat.Swim();
+                }
+
+                if (vehicle is Airplane plane)
+                {
+                    plane.Fly();
+                }
+
+                if (vehicle is IFlyable flyable)
+                {
+                    Console.WriteLine("  Используем интерфейс IFlyable:");
+                    flyable.Fly();
+                }
+
+                if (vehicle is ISwimmable swimmable)
+                {
+                    Console.WriteLine("  Используем интерфейс ISwimmable:");
+                    swimmable.Swim();
+                }
+            }
+        }
+
+        static void DemonstrateIsVsAsComparison()
+        {
+            Console.WriteLine("\n=== 10. СРАВНЕНИЕ РАБОТЫ IS И AS ===");
+
+            Animal dog = new Dog("Рекс");
+            Animal bird = new Bird("Кеша");
+            Animal duck = new Duck("Скрудж");
+
+            Console.WriteLine("СРАВНЕНИЕ IS И AS:");
+            Console.WriteLine("==================");
+
+            Console.WriteLine("\n1. Оператор IS (проверка типа):");
+            Console.WriteLine($"dog is Dog: {dog is Dog}");
+            Console.WriteLine($"dog is Bird: {dog is Bird}");
+            Console.WriteLine($"bird is IFlyable: {bird is IFlyable}");
+            Console.WriteLine($"duck is IFlyable: {duck is IFlyable}");
+            Console.WriteLine($"duck is ISwimmable: {duck is ISwimmable}");
+
+            Console.WriteLine("\n2. Оператор AS (приведение типа):");
+            Dog dogAsDog = dog as Dog;
+            Console.WriteLine($"dog as Dog: {dogAsDog?.Name ?? "null"}");
+
+            Bird dogAsBird = dog as Bird;
+            Console.WriteLine($"dog as Bird: {dogAsBird?.Name ?? "null"}");
+
+            IFlyable birdAsFlyable = bird as IFlyable;
+            Console.WriteLine($"bird as IFlyable: {(birdAsFlyable != null ? "успешно" : "null")}");
+
+            IFlyable duckAsFlyable = duck as IFlyable;
+            Console.WriteLine($"duck as IFlyable: {(duckAsFlyable != null ? "успешно" : "null")}");
+
+            ISwimmable duckAsSwimmable = duck as ISwimmable;
+            Console.WriteLine($"duck as ISwimmable: {(duckAsSwimmable != null ? "успешно" : "null")}");
+
+            Console.WriteLine("\n3. КОМБИНАЦИЯ IS И AS:");
+            Console.WriteLine("Эффективный подход - сначала проверяем, потом приводим:");
+
+            if (duck is IFlyable)
+            {
+                IFlyable flyable = duck as IFlyable;
+                Console.WriteLine("Проверили через is, привели через as:");
+                flyable.Fly();
+            }
+
+            Console.WriteLine("\n4. ПАТТЕРН С IS (совмещение проверки и приведения):");
+            if (duck is IFlyable flyableDuck)
+            {
+                Console.WriteLine("Проверка и приведение в одной операции:");
+                flyableDuck.Fly();
+            }
+
+            if (dog is Dog specificDog)
+            {
+                Console.WriteLine("Собака найдена через паттерн is:");
+                specificDog.Fetch();
+            }
+
+            Console.WriteLine("\nВЫВОД:");
+            Console.WriteLine("- IS: только проверка типа, возвращает bool");
+            Console.WriteLine("- AS: попытка приведения, возвращает объект или null");
+            Console.WriteLine("- IS + AS: безопасный и эффективный подход");
+            Console.WriteLine("- Паттерн IS: проверка и приведение в одной операции");
+        }
+
+        static void DemonstrateAll()
+        {
+            Console.WriteLine("\n=== ПОЛНАЯ ДЕМОНСТРАЦИЯ ОПЕРАТОРОВ IS, AS И CAST ===\n");
+
+            DemonstrateIsOperator();
+            DemonstrateAsOperator();
+            DemonstrateTypeCheckWithIs();
+            DemonstrateSafeCastingWithAs();
+            DemonstrateAsReturnsNull();
+            DemonstrateNullHandlingAfterAs();
+            DemonstrateCastWithExceptionHandling();
+            DemonstrateInterfaceMethodsAfterAs();
+            DemonstrateTypeCheckAndSpecificMethod();
+            DemonstrateIsVsAsComparison();
+
+            Console.WriteLine("\n=== ВСЕ ДЕМОНСТРАЦИИ ЗАВЕРШЕНЫ ===");
+        }
+    }
+}

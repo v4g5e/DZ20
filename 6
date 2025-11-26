@@ -1,0 +1,757 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp4
+{
+    using System;
+    public abstract class Shape
+    {
+        public string Name { get; set; }
+
+        public Shape(string name)
+        {
+            Name = name;
+        }
+
+        public virtual void Display()
+        {
+            Console.WriteLine($"Фигура: {Name}");
+        }
+
+        public abstract double CalculateArea();
+
+        public virtual void Draw()
+        {
+            Console.WriteLine($"Рисую фигуру {Name}");
+        }
+    }
+
+    public class Circle : Shape
+    {
+        public double Radius { get; set; }
+
+        public Circle(string name, double radius) : base(name)
+        {
+            Radius = radius;
+        }
+
+        public override double CalculateArea()
+        {
+            return Math.PI * Radius * Radius;
+        }
+
+        public override void Draw()
+        {
+            Console.WriteLine($"Рисую круг {Name} с радиусом {Radius}");
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Круг: {Name}, Радиус: {Radius}, Площадь: {CalculateArea():F2}");
+        }
+    }
+
+    public class Rectangle : Shape
+    {
+        public double Width { get; set; }
+        public double Height { get; set; }
+
+        public Rectangle(string name, double width, double height) : base(name)
+        {
+            Width = width;
+            Height = height;
+        }
+
+        public override double CalculateArea()
+        {
+            return Width * Height;
+        }
+
+        public override void Draw()
+        {
+            Console.WriteLine($"Рисую прямоугольник {Name} размером {Width}x{Height}");
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Прямоугольник: {Name}, Размер: {Width}x{Height}, Площадь: {CalculateArea():F2}");
+        }
+    }
+
+    public class Triangle : Shape
+    {
+        public double Base { get; set; }
+        public double Height { get; set; }
+
+        public Triangle(string name, double baseLength, double height) : base(name)
+        {
+            Base = baseLength;
+            Height = height;
+        }
+
+        public override double CalculateArea()
+        {
+            return 0.5 * Base * Height;
+        }
+
+        public override void Draw()
+        {
+            Console.WriteLine($"Рисую треугольник {Name} с основанием {Base} и высотой {Height}");
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Треугольник: {Name}, Основание: {Base}, Высота: {Height}, Площадь: {CalculateArea():F2}");
+        }
+    }
+
+    public interface IDrawable
+    {
+        void Draw();
+        string GetDescription();
+    }
+
+    public interface IResizable
+    {
+        void Resize(double factor);
+    }
+
+    public class Text : IDrawable
+    {
+        public string Content { get; set; }
+
+        public Text(string content)
+        {
+            Content = content;
+        }
+
+        public void Draw()
+        {
+            Console.WriteLine($"Рисую текст: '{Content}'");
+        }
+
+        public string GetDescription()
+        {
+            return $"Текст: {Content}";
+        }
+    }
+
+    public class Image : IDrawable, IResizable
+    {
+        public string FileName { get; set; }
+        public double Size { get; set; }
+
+        public Image(string fileName, double size)
+        {
+            FileName = fileName;
+            Size = size;
+        }
+
+        public void Draw()
+        {
+            Console.WriteLine($"Рисую изображение: {FileName}");
+        }
+
+        public string GetDescription()
+        {
+            return $"Изображение: {FileName}, Размер: {Size}KB";
+        }
+
+        public void Resize(double factor)
+        {
+            Size *= factor;
+            Console.WriteLine($"Изменен размер изображения {FileName} в {factor} раз. Новый размер: {Size:F2}KB");
+        }
+    }
+
+    public class Animal
+    {
+        public string Name { get; set; }
+
+        public Animal(string name)
+        {
+            Name = name;
+        }
+
+        public virtual void MakeSound()
+        {
+            Console.WriteLine($"{Name} издает звук");
+        }
+
+        public virtual void Move()
+        {
+            Console.WriteLine($"{Name} двигается");
+        }
+    }
+
+    public class Dog : Animal
+    {
+        public Dog(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} лает: Гав-гав!");
+        }
+
+        public override void Move()
+        {
+            Console.WriteLine($"{Name} бегает на четырех лапах");
+        }
+
+        public void Fetch()
+        {
+            Console.WriteLine($"{Name} приносит палку");
+        }
+    }
+
+    public class Bird : Animal
+    {
+        public Bird(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} чирикает: Чик-чирик!");
+        }
+
+        public override void Move()
+        {
+            Console.WriteLine($"{Name} летает в небе");
+        }
+
+        public void Fly()
+        {
+            Console.WriteLine($"{Name} машет крыльями и взлетает");
+        }
+    }
+
+    public class Fish : Animal
+    {
+        public Fish(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} издает булькающие звуки");
+        }
+
+        public override void Move()
+        {
+            Console.WriteLine($"{Name} плавает в воде");
+        }
+
+        public void Swim()
+        {
+            Console.WriteLine($"{Name} плывет, извиваясь");
+        }
+    }
+
+    public class Vehicle
+    {
+        public string Brand { get; set; }
+        public int Speed { get; set; }
+
+        public Vehicle(string brand, int speed)
+        {
+            Brand = brand;
+            Speed = speed;
+        }
+
+        public virtual void Start()
+        {
+            Console.WriteLine($"{Brand} запускается");
+        }
+
+        public virtual void Stop()
+        {
+            Console.WriteLine($"{Brand} останавливается");
+        }
+
+        public void DisplaySpeed()
+        {
+            Console.WriteLine($"{Brand} движется со скоростью {Speed} км/ч");
+        }
+    }
+
+    public class Car : Vehicle
+    {
+        public Car(string brand, int speed) : base(brand, speed) { }
+
+        public override void Start()
+        {
+            Console.WriteLine($"{Brand} заводит двигатель и начинает движение");
+        }
+
+        public override void Stop()
+        {
+            Console.WriteLine($"{Brand} нажимает тормоз и останавливается");
+        }
+
+        public void Honk()
+        {
+            Console.WriteLine($"{Brand} сигналит: Би-бип!");
+        }
+    }
+
+    public class Bicycle : Vehicle
+    {
+        public Bicycle(string brand, int speed) : base(brand, speed) { }
+
+        public override void Start()
+        {
+            Console.WriteLine($"{Brand} начинает крутить педали");
+        }
+
+        public override void Stop()
+        {
+            Console.WriteLine($"{Brand} перестает крутить педали и замедляется");
+        }
+
+        public void RingBell()
+        {
+            Console.WriteLine($"{Brand} звонит в звонок: Дзинь-дзинь!");
+        }
+    }
+
+    public class DrawingTool
+    {
+        public static void DrawObject(IDrawable drawable)
+        {
+            Console.WriteLine("Инструмент рисования:");
+            drawable.Draw();
+            Console.WriteLine($"Описание: {drawable.GetDescription()}");
+            Console.WriteLine();
+        }
+
+        public static void ProcessShape(Shape shape)
+        {
+            Console.WriteLine("Обработка фигуры:");
+            shape.Display();
+            shape.Draw();
+            Console.WriteLine($"Площадь: {shape.CalculateArea():F2}");
+            Console.WriteLine();
+        }
+
+        public static void MakeAnimalSound(Animal animal)
+        {
+            Console.WriteLine($"Звук животного {animal.Name}:");
+            animal.MakeSound();
+            animal.Move();
+            Console.WriteLine();
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nВыберите демонстрацию (1-15):");
+                Console.WriteLine("1. Виртуальный метод с переопределением");
+                Console.WriteLine("2. Абстрактный класс с абстрактными методами");
+                Console.WriteLine("3. Интерфейс для реализации полиморфизма");
+                Console.WriteLine("4. Массив базового типа с вызовом методов");
+                Console.WriteLine("5. Несколько производных классов с разным поведением");
+                Console.WriteLine("6. Интерфейсный полиморфизм с оператором as");
+                Console.WriteLine("7. Динамический dispatch полиморфных объектов");
+                Console.WriteLine("8. Перегрузка методов в производном классе");
+                Console.WriteLine("9. Полиморфизм при передаче объектов в методы");
+                Console.WriteLine("10. Виртуальные и абстрактные методы");
+                Console.WriteLine("11. Интерфейсные методы с различными реализациями");
+                Console.WriteLine("12. Runtime полиморфизм с переопределёнными методами");
+                Console.WriteLine("13. Базовый тип для хранения производных объектов");
+                Console.WriteLine("14. Полиморфная обработка коллекций");
+                Console.WriteLine("15. Метод override для изменения поведения");
+                Console.WriteLine("0. Все демонстрации");
+
+                Console.Write("Ваш выбор: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DemonstrateVirtualMethod();
+                        break;
+                    case "2":
+                        DemonstrateAbstractClass();
+                        break;
+                    case "3":
+                        DemonstrateInterfacePolymorphism();
+                        break;
+                    case "4":
+                        DemonstrateBaseTypeArray();
+                        break;
+                    case "5":
+                        DemonstrateMultipleDerivedClasses();
+                        break;
+                    case "6":
+                        DemonstrateInterfaceWithAs();
+                        break;
+                    case "7":
+                        DemonstrateDynamicDispatch();
+                        break;
+                    case "8":
+                        DemonstrateMethodOverloading();
+                        break;
+                    case "9":
+                        DemonstrateMethodParameterPolymorphism();
+                        break;
+                    case "10":
+                        DemonstrateVirtualAndAbstract();
+                        break;
+                    case "11":
+                        DemonstrateInterfaceImplementations();
+                        break;
+                    case "12":
+                        DemonstrateRuntimePolymorphism();
+                        break;
+                    case "13":
+                        DemonstrateBaseTypeStorage();
+                        break;
+                    case "14":
+                        DemonstrateCollectionPolymorphism();
+                        break;
+                    case "15":
+                        DemonstrateOverrideBehavior();
+                        break;
+                    case "0":
+                        DemonstrateAllPolymorphism();
+                        break;
+                    default:
+                        Console.WriteLine("Неверный выбор, попробуйте снова");
+                        break;
+                }
+            }
+        }
+
+        static void DemonstrateVirtualMethod()
+        {
+            Console.WriteLine("\n=== 1. ВИРТУАЛЬНЫЙ МЕТОД С ПЕРЕОПРЕДЕЛЕНИЕМ ===");
+
+            Shape shape1 = new Circle("Круглый", 5.0);
+            Shape shape2 = new Rectangle("Прямоугольный", 4.0, 6.0);
+
+            shape1.Draw();
+            shape2.Draw();
+
+            Circle circle = new Circle("Маленький круг", 2.0);
+            circle.Draw();
+        }
+
+        static void DemonstrateAbstractClass()
+        {
+            Console.WriteLine("\n=== 2. АБСТРАКТНЫЙ КЛАСС С АБСТРАКТНЫМИ МЕТОДАМИ ===");
+
+            Shape circle = new Circle("Большой круг", 10.0);
+            Shape rectangle = new Rectangle("Квадрат", 5.0, 5.0);
+            Shape triangle = new Triangle("Треугольник", 6.0, 4.0);
+
+            circle.Display();
+            rectangle.Display();
+            triangle.Display();
+
+            Console.WriteLine($"Площадь круга: {circle.CalculateArea():F2}");
+            Console.WriteLine($"Площадь прямоугольника: {rectangle.CalculateArea():F2}");
+            Console.WriteLine($"Площадь треугольника: {triangle.CalculateArea():F2}");
+        }
+
+        static void DemonstrateInterfacePolymorphism()
+        {
+            Console.WriteLine("\n=== 3. ИНТЕРФЕЙС ДЛЯ РЕАЛИЗАЦИИ ПОЛИМОРФИЗМА ===");
+
+            IDrawable text = new Text("Привет, мир!");
+            IDrawable image = new Image("photo.jpg", 1024);
+
+            text.Draw();
+            image.Draw();
+
+            Console.WriteLine(text.GetDescription());
+            Console.WriteLine(image.GetDescription());
+        }
+
+        static void DemonstrateBaseTypeArray()
+        {
+            Console.WriteLine("\n=== 4. МАССИВ БАЗОВОГО ТИПА С ВЫЗОВОМ МЕТОДОВ ===");
+
+            Shape[] shapes = new Shape[]
+            {
+            new Circle("Круг 1", 3.0),
+            new Rectangle("Прямоугольник 1", 4.0, 5.0),
+            new Triangle("Треугольник 1", 3.0, 4.0),
+            new Circle("Круг 2", 7.0)
+            };
+
+            foreach (Shape shape in shapes)
+            {
+                shape.Draw();
+                Console.WriteLine($"Площадь: {shape.CalculateArea():F2}");
+            }
+        }
+
+        static void DemonstrateMultipleDerivedClasses()
+        {
+            Console.WriteLine("\n=== 5. НЕСКОЛЬКО ПРОИЗВОДНЫХ КЛАССОВ С РАЗНЫМ ПОВЕДЕНИЕМ ===");
+
+            Animal dog = new Dog("Рекс");
+            Animal bird = new Bird("Кеша");
+            Animal fish = new Fish("Немо");
+
+            dog.MakeSound();
+            bird.MakeSound();
+            fish.MakeSound();
+
+            dog.Move();
+            bird.Move();
+            fish.Move();
+        }
+
+        static void DemonstrateInterfaceWithAs()
+        {
+            Console.WriteLine("\n=== 6. ИНТЕРФЕЙСНЫЙ ПОЛИМОРФИЗМ С ОПЕРАТОРОМ AS ===");
+
+            IDrawable drawable1 = new Text("Текст для рисования");
+            IDrawable drawable2 = new Image("image.png", 2048);
+
+            DrawingTool.DrawObject(drawable1);
+            DrawingTool.DrawObject(drawable2);
+
+            IResizable resizable = drawable2 as IResizable;
+            if (resizable != null)
+            {
+                resizable.Resize(0.5);
+            }
+
+            Image image = drawable2 as Image;
+            if (image != null)
+            {
+                Console.WriteLine($"Размер изображения: {image.Size}KB");
+            }
+        }
+
+        static void DemonstrateDynamicDispatch()
+        {
+            Console.WriteLine("\n=== 7. ДИНАМИЧЕСКИЙ DISPATCH ПОЛИМОРФНЫХ ОБЪЕКТОВ ===");
+
+            Vehicle vehicle1 = new Car("Toyota", 120);
+            Vehicle vehicle2 = new Bicycle("Stels", 25);
+            Vehicle vehicle3 = new Vehicle("Generic", 60);
+
+            vehicle1.Start();
+            vehicle1.DisplaySpeed();
+            vehicle1.Stop();
+
+            vehicle2.Start();
+            vehicle2.DisplaySpeed();
+            vehicle2.Stop();
+
+            vehicle3.Start();
+            vehicle3.DisplaySpeed();
+            vehicle3.Stop();
+        }
+
+        static void DemonstrateMethodOverloading()
+        {
+            Console.WriteLine("\n=== 8. ПЕРЕГРУЗКА МЕТОДОВ В ПРОИЗВОДНОМ КЛАССЕ ===");
+
+            Car car = new Car("BMW", 150);
+            car.Start();
+            car.Honk();
+            car.Stop();
+
+            Bicycle bicycle = new Bicycle("Forward", 20);
+            bicycle.Start();
+            bicycle.RingBell();
+            bicycle.Stop();
+        }
+
+        static void DemonstrateMethodParameterPolymorphism()
+        {
+            Console.WriteLine("\n=== 9. ПОЛИМОРФИЗМ ПРИ ПЕРЕДАЧЕ ОБЪЕКТОВ В МЕТОДЫ ===");
+
+            Circle circle = new Circle("Круг", 5.0);
+            Rectangle rectangle = new Rectangle("Прямоугольник", 4.0, 6.0);
+
+            DrawingTool.ProcessShape(circle);
+            DrawingTool.ProcessShape(rectangle);
+
+            Dog dog = new Dog("Барсик");
+            Bird bird = new Bird("Чижик");
+
+            DrawingTool.MakeAnimalSound(dog);
+            DrawingTool.MakeAnimalSound(bird);
+        }
+
+        static void DemonstrateVirtualAndAbstract()
+        {
+            Console.WriteLine("\n=== 10. ВИРТУАЛЬНЫЕ И АБСТРАКТНЫЕ МЕТОДЫ ===");
+
+            List<Shape> shapes = new List<Shape>
+        {
+            new Circle("Круг A", 3.0),
+            new Rectangle("Прямоугольник B", 2.0, 3.0),
+            new Triangle("Треугольник C", 4.0, 3.0)
+        };
+
+            foreach (Shape shape in shapes)
+            {
+                shape.Display();
+                shape.Draw();
+                Console.WriteLine($"Площадь: {shape.CalculateArea():F2}");
+                Console.WriteLine();
+            }
+        }
+
+        static void DemonstrateInterfaceImplementations()
+        {
+            Console.WriteLine("\n=== 11. ИНТЕРФЕЙСНЫЕ МЕТОДЫ С РАЗЛИЧНЫМИ РЕАЛИЗАЦИЯМИ ===");
+
+            List<IDrawable> drawables = new List<IDrawable>
+        {
+            new Text("Первый текст"),
+            new Image("picture.jpg", 512),
+            new Text("Второй текст"),
+            new Image("diagram.png", 256)
+        };
+
+            foreach (IDrawable drawable in drawables)
+            {
+                drawable.Draw();
+                Console.WriteLine(drawable.GetDescription());
+                Console.WriteLine();
+            }
+        }
+
+        static void DemonstrateRuntimePolymorphism()
+        {
+            Console.WriteLine("\n=== 12. RUNTIME ПОЛИМОРФИЗМ С ПЕРЕОПРЕДЕЛЁННЫМИ МЕТОДАМИ ===");
+
+            Animal animal1 = new Dog("Шарик");
+            Animal animal2 = new Bird("Кеша");
+            Animal animal3 = new Fish("Золотистый");
+
+            Console.WriteLine("Runtime полиморфизм - методы вызываются в зависимости от реального типа объекта:");
+
+            Animal[] animals = { animal1, animal2, animal3 };
+
+            foreach (Animal animal in animals)
+            {
+                Console.WriteLine($"Тип объекта: {animal.GetType().Name}");
+                animal.MakeSound();
+                animal.Move();
+                Console.WriteLine();
+            }
+        }
+
+        static void DemonstrateBaseTypeStorage()
+        {
+            Console.WriteLine("\n=== 13. БАЗОВЫЙ ТИП ДЛЯ ХРАНЕНИЯ ПРОИЗВОДНЫХ ОБЪЕКТОВ ===");
+
+            Shape shapeStorage = new Circle("Хранимый круг", 8.0);
+            shapeStorage.Draw();
+
+            shapeStorage = new Rectangle("Хранимый прямоугольник", 5.0, 10.0);
+            shapeStorage.Draw();
+
+            Vehicle vehicleStorage = new Car("Mercedes", 180);
+            vehicleStorage.Start();
+
+            vehicleStorage = new Bicycle("Merida", 30);
+            vehicleStorage.Start();
+        }
+
+        static void DemonstrateCollectionPolymorphism()
+        {
+            Console.WriteLine("\n=== 14. ПОЛИМОРФНАЯ ОБРАБОТКА КОЛЛЕКЦИЙ ===");
+
+            List<Animal> zoo = new List<Animal>
+        {
+            new Dog("Рекс"),
+            new Bird("Кеша"),
+            new Fish("Немо"),
+            new Dog("Барбос"),
+            new Bird("Гоша")
+        };
+
+            Console.WriteLine("Полиморфная обработка коллекции животных:");
+
+            foreach (Animal animal in zoo)
+            {
+                Console.WriteLine($"--- {animal.GetType().Name} {animal.Name} ---");
+                animal.MakeSound();
+                animal.Move();
+
+                if (animal is Dog dog)
+                {
+                    dog.Fetch();
+                }
+                else if (animal is Bird bird)
+                {
+                    bird.Fly();
+                }
+                else if (animal is Fish fish)
+                {
+                    fish.Swim();
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+        static void DemonstrateOverrideBehavior()
+        {
+            Console.WriteLine("\n=== 15. МЕТОД OVERRIDE ДЛЯ ИЗМЕНЕНИЯ ПОВЕДЕНИЯ ===");
+
+            Vehicle genericVehicle = new Vehicle("Обычный транспорт", 50);
+            Car sportsCar = new Car("Спортивный автомобиль", 200);
+            Bicycle mountainBike = new Bicycle("Горный велосипед", 35);
+
+            Console.WriteLine("Разное поведение при переопределении методов:");
+
+            genericVehicle.Start();
+            genericVehicle.Stop();
+
+            sportsCar.Start();
+            sportsCar.Stop();
+
+            mountainBike.Start();
+            mountainBike.Stop();
+
+            Console.WriteLine("\nДемонстрация через базовый тип:");
+            Vehicle[] vehicles = { genericVehicle, sportsCar, mountainBike };
+
+            foreach (Vehicle vehicle in vehicles)
+            {
+                Console.WriteLine($"Тип: {vehicle.GetType().Name}");
+                vehicle.Start();
+                vehicle.Stop();
+                Console.WriteLine();
+            }
+        }
+
+        static void DemonstrateAllPolymorphism()
+        {
+            Console.WriteLine("\n=== ПОЛНАЯ ДЕМОНСТРАЦИЯ ПОЛИМОРФИЗМА ===\n");
+
+            DemonstrateVirtualMethod();
+            DemonstrateAbstractClass();
+            DemonstrateInterfacePolymorphism();
+            DemonstrateBaseTypeArray();
+            DemonstrateMultipleDerivedClasses();
+            DemonstrateInterfaceWithAs();
+            DemonstrateDynamicDispatch();
+            DemonstrateMethodOverloading();
+            DemonstrateMethodParameterPolymorphism();
+            DemonstrateVirtualAndAbstract();
+            DemonstrateInterfaceImplementations();
+            DemonstrateRuntimePolymorphism();
+            DemonstrateBaseTypeStorage();
+            DemonstrateCollectionPolymorphism();
+            DemonstrateOverrideBehavior();
+
+            Console.WriteLine("\n=== ВСЕ ДЕМОНСТРАЦИИ ПОЛИМОРФИЗМА ЗАВЕРШЕНЫ ===");
+        }
+    }
+}

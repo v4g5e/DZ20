@@ -1,0 +1,659 @@
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp4
+{
+    public sealed class Logger
+    {
+        private static Logger _instance;
+        private static readonly object _lock = new object();
+
+        private Logger() { }
+
+        public static Logger Instance
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new Logger();
+                    }
+                    return _instance;
+                }
+            }
+        }
+
+        public void Log(string message)
+        {
+            Console.WriteLine($"[ЛОГ] {DateTime.Now:yyyy-MM-dd HH:mm:ss}: {message}");
+        }
+
+        public void Error(string message)
+        {
+            Console.WriteLine($"[ОШИБКА] {DateTime.Now:yyyy-MM-dd HH:mm:ss}: {message}");
+        }
+
+        public void Warning(string message)
+        {
+            Console.WriteLine($"[ПРЕДУПРЕЖДЕНИЕ] {DateTime.Now:yyyy-MM-dd HH:mm:ss}: {message}");
+        }
+    }
+
+    public sealed class Configuration
+    {
+        private static Configuration _instance;
+        private static readonly object _lock = new object();
+
+        private string _connectionString;
+        private int _timeout;
+        private bool _isDebug;
+
+        private Configuration()
+        {
+            _connectionString = "Server=localhost;Database=Test;Trusted_Connection=true;";
+            _timeout = 30;
+            _isDebug = true;
+        }
+
+        public static Configuration Instance
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new Configuration();
+                    }
+                    return _instance;
+                }
+            }
+        }
+
+        public string ConnectionString => _connectionString;
+
+        public int Timeout => _timeout;
+
+        public bool IsDebug => _isDebug;
+
+        public void UpdateConnectionString(string newConnectionString)
+        {
+            if (!string.IsNullOrEmpty(newConnectionString))
+            {
+                _connectionString = newConnectionString;
+            }
+        }
+
+        public void SetDebugMode(bool isDebug)
+        {
+            _isDebug = isDebug;
+        }
+    }
+
+    public sealed class SecurityManager
+    {
+        private string _encryptionKey;
+        private int _accessLevel;
+
+        public SecurityManager(string encryptionKey, int accessLevel)
+        {
+            _encryptionKey = encryptionKey ?? throw new ArgumentNullException(nameof(encryptionKey));
+            _accessLevel = accessLevel;
+        }
+
+        public string Encrypt(string data)
+        {
+            if (string.IsNullOrEmpty(data))
+                return string.Empty;
+
+            char[] chars = data.ToCharArray();
+            for (int i = 0; i < chars.Length; i++)
+            {
+                chars[i] = (char)(chars[i] + 1);
+            }
+            return new string(chars);
+        }
+
+        public string Decrypt(string encryptedData)
+        {
+            if (string.IsNullOrEmpty(encryptedData))
+                return string.Empty;
+
+            char[] chars = encryptedData.ToCharArray();
+            for (int i = 0; i < chars.Length; i++)
+            {
+                chars[i] = (char)(chars[i] - 1);
+            }
+            return new string(chars);
+        }
+
+        public bool HasAccess(int requiredLevel)
+        {
+            return _accessLevel >= requiredLevel;
+        }
+
+        private void ValidateKey()
+        {
+            if (string.IsNullOrEmpty(_encryptionKey) || _encryptionKey.Length < 8)
+            {
+                throw new InvalidOperationException("Неверный ключ шифрования");
+            }
+        }
+    }
+
+    public sealed class MathCalculator
+    {
+        public const double PI = 3.141592653589793;
+        public const double E = 2.718281828459045;
+
+        public double CalculateCircleArea(double radius)
+        {
+            if (radius < 0)
+                throw new ArgumentException("Радиус не может быть отрицательным");
+
+            return PI * radius * radius;
+        }
+
+        public double CalculateCircleCircumference(double radius)
+        {
+            if (radius < 0)
+                throw new ArgumentException("Радиус не может быть отрицательным");
+
+            return 2 * PI * radius;
+        }
+
+        public double CalculateRectangleArea(double width, double height)
+        {
+            if (width < 0 || height < 0)
+                throw new ArgumentException("Размеры не могут быть отрицательными");
+
+            return width * height;
+        }
+
+        public double CalculateTriangleArea(double baseLength, double height)
+        {
+            if (baseLength < 0 || height < 0)
+                throw new ArgumentException("Размеры не могут быть отрицательными");
+
+            return 0.5 * baseLength * height;
+        }
+
+        public static double DegreesToRadians(double degrees)
+        {
+            return degrees * (PI / 180.0);
+        }
+
+        public static double RadiansToDegrees(double radians)
+        {
+            return radians * (180.0 / PI);
+        }
+    }
+
+    public sealed class Validator
+    {
+        public bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                return false;
+
+            return email.Contains("@") && email.Contains(".");
+        }
+
+        public bool IsValidPhoneNumber(string phone)
+        {
+            if (string.IsNullOrEmpty(phone))
+                return false;
+
+            return phone.Length >= 10 && System.Text.RegularExpressions.Regex.IsMatch(phone, @"^[0-9+\-() ]+$");
+        }
+
+        public bool IsStrongPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password) || password.Length < 8)
+                return false;
+
+            bool hasUpper = false;
+            bool hasLower = false;
+            bool hasDigit = false;
+            bool hasSpecial = false;
+
+            foreach (char c in password)
+            {
+                if (char.IsUpper(c)) hasUpper = true;
+                if (char.IsLower(c)) hasLower = true;
+                if (char.IsDigit(c)) hasDigit = true;
+                if (!char.IsLetterOrDigit(c)) hasSpecial = true;
+            }
+
+            return hasUpper && hasLower && hasDigit && hasSpecial;
+        }
+
+        public bool IsInRange(int value, int min, int max)
+        {
+            return value >= min && value <= max;
+        }
+
+        public bool IsInRange(double value, double min, double max)
+        {
+            return value >= min && value <= max;
+        }
+    }
+
+    public class BaseClass
+    {
+        public virtual void NormalMethod()
+        {
+            Console.WriteLine("Обычный метод в BaseClass");
+        }
+
+        public virtual void MethodForSealing()
+        {
+            Console.WriteLine("Этот метод будет запечатан в производном классе");
+        }
+    }
+
+    public class DerivedClass : BaseClass
+    {
+        public override void NormalMethod()
+        {
+            Console.WriteLine("Обычный метод в DerivedClass");
+        }
+
+        public sealed override void MethodForSealing()
+        {
+            Console.WriteLine("Этот метод запечатан и не может быть переопределен далее");
+        }
+    }
+
+    public class FurtherDerivedClass : DerivedClass
+    {
+        public override void NormalMethod()
+        {
+            Console.WriteLine("Обычный метод в FurtherDerivedClass");
+        }
+    }
+
+    public sealed class AuditTrail
+    {
+        private readonly List<string> _auditLog;
+
+        public AuditTrail()
+        {
+            _auditLog = new List<string>();
+        }
+
+        public void AddEntry(string action, string user)
+        {
+            string entry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Пользователь: {user} - Действие: {action}";
+            _auditLog.Add(entry);
+            Console.WriteLine($"АУДИТ: {entry}");
+        }
+
+        public void DisplayAuditLog()
+        {
+            Console.WriteLine("\n=== ЖУРНАЛ АУДИТА ===");
+            foreach (string entry in _auditLog)
+            {
+                Console.WriteLine(entry);
+            }
+            Console.WriteLine("=====================\n");
+        }
+
+        public void ClearAuditLog()
+        {
+            _auditLog.Clear();
+            Console.WriteLine("Журнал аудита очищен");
+        }
+    }
+
+    public sealed class PaymentProcessor
+    {
+        private decimal _balance;
+
+        public PaymentProcessor(decimal initialBalance = 0)
+        {
+            _balance = initialBalance;
+        }
+
+        public bool ProcessPayment(decimal amount, string paymentMethod)
+        {
+            if (amount <= 0)
+            {
+                Console.WriteLine($"Неверная сумма платежа: {amount}");
+                return false;
+            }
+
+            if (_balance >= amount)
+            {
+                _balance -= amount;
+                Console.WriteLine($"Платеж на сумму {amount:C} обработан с помощью {paymentMethod}. Остаток средств: {_balance:C}");
+                return true;
+            }
+            else
+            {
+                Console.WriteLine($"Недостаточно средств. Требуется: {amount:C}, Доступно: {_balance:C}");
+                return false;
+            }
+        }
+
+        public void AddFunds(decimal amount)
+        {
+            if (amount > 0)
+            {
+                _balance += amount;
+                Console.WriteLine($"Добавлено {amount:C}. Новый баланс: {_balance:C}");
+            }
+        }
+
+        public decimal GetBalance()
+        {
+            return _balance;
+        }
+
+        private bool ValidatePaymentMethod(string paymentMethod)
+        {
+            string[] validMethods = { "Кредитная карта", "Дебетовая карта", "PayPal", "Банковский перевод" };
+            return Array.Exists(validMethods, method => method.Equals(paymentMethod, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    public sealed class SystemMonitor
+    {
+        private DateTime _startTime;
+        private int _errorCount;
+        private int _warningCount;
+
+        public SystemMonitor()
+        {
+            _startTime = DateTime.Now;
+            _errorCount = 0;
+            _warningCount = 0;
+        }
+
+        public void ReportError(string errorMessage)
+        {
+            _errorCount++;
+            Console.WriteLine($"[СИСТЕМНАЯ ОШИБКА #{_errorCount}] {errorMessage}");
+        }
+
+        public void ReportWarning(string warningMessage)
+        {
+            _warningCount++;
+            Console.WriteLine($"[СИСТЕМНОЕ ПРЕДУПРЕЖДЕНИЕ #{_warningCount}] {warningMessage}");
+        }
+
+        public void GenerateReport()
+        {
+            TimeSpan uptime = DateTime.Now - _startTime;
+            Console.WriteLine("\n=== ОТЧЕТ МОНИТОРА СИСТЕМЫ ===");
+            Console.WriteLine($"Время начала: {_startTime:yyyy-MM-dd HH:mm:ss}");
+            Console.WriteLine($"Время работы: {uptime:hh\\:mm\\:ss}");
+            Console.WriteLine($"Всего ошибок: {_errorCount}");
+            Console.WriteLine($"Всего предупреждений: {_warningCount}");
+            Console.WriteLine("==============================\n");
+        }
+
+        public void Reset()
+        {
+            _startTime = DateTime.Now;
+            _errorCount = 0;
+            _warningCount = 0;
+            Console.WriteLine("Монитор системы сброшен");
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+
+            while (true)
+            {
+                Console.WriteLine("\nВыберите демонстрацию (1-10):");
+                Console.WriteLine("1. Sealed класс и попытка наследования");
+                Console.WriteLine("2. Sealed класс с закрытым методом");
+                Console.WriteLine("3. Sealed для предотвращения наследования");
+                Console.WriteLine("4. Невозможность override sealed метода");
+                Console.WriteLine("5. Sealed класс с публичным методом");
+                Console.WriteLine("6. Sealed класс с ограничением на конструктор");
+                Console.WriteLine("7. Sealed класс для логирования");
+                Console.WriteLine("8. Sealed класс для конфиденциальных данных");
+                Console.WriteLine("9. Sealed класс с защищёнными свойствами");
+                Console.WriteLine("10. Sealed класс для контрольных объектов");
+                Console.WriteLine("0. Все демонстрации");
+
+                Console.Write("Ваш выбор: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DemonstrateSealedInheritanceAttempt();
+                        break;
+                    case "2":
+                        DemonstrateSealedWithPrivateMethod();
+                        break;
+                    case "3":
+                        DemonstratePreventInheritance();
+                        break;
+                    case "4":
+                        DemonstrateCannotOverrideSealedMethod();
+                        break;
+                    case "5":
+                        DemonstrateSealedWithPublicMethod();
+                        break;
+                    case "6":
+                        DemonstrateSealedWithConstructorRestriction();
+                        break;
+                    case "7":
+                        DemonstrateSealedForLogging();
+                        break;
+                    case "8":
+                        DemonstrateSealedForConfidentialData();
+                        break;
+                    case "9":
+                        DemonstrateSealedWithProtectedProperties();
+                        break;
+                    case "10":
+                        DemonstrateSealedForControlObjects();
+                        break;
+                    case "0":
+                        DemonstrateAllSealedExamples();
+                        break;
+                    default:
+                        Console.WriteLine("Неверный выбор, попробуйте снова");
+                        break;
+                }
+            }
+        }
+
+        static void DemonstrateSealedInheritanceAttempt()
+        {
+            Console.WriteLine("\n=== 1. SEALED КЛАСС И ПОПЫТКА НАСЛЕДОВАНИЯ ===");
+
+            Logger logger = Logger.Instance;
+            logger.Log("Приложение запущено");
+            logger.Warning("Это предупреждение");
+            logger.Error("Это ошибка");
+
+            Console.WriteLine("Наследование от sealed класса Logger невозможно - ошибка компиляции");
+        }
+
+        static void DemonstrateSealedWithPrivateMethod()
+        {
+            Console.WriteLine("\n=== 2. SEALED КЛАСС С ЗАКРЫТЫМ МЕТОДОМ ===");
+
+            SecurityManager security = new SecurityManager("mySecretKey123", 2);
+
+            string original = "Конфиденциальные данные";
+            string encrypted = security.Encrypt(original);
+            string decrypted = security.Decrypt(encrypted);
+
+            Console.WriteLine($"Оригинал: {original}");
+            Console.WriteLine($"Зашифровано: {encrypted}");
+            Console.WriteLine($"Расшифровано: {decrypted}");
+
+            Console.WriteLine($"Имеет уровень доступа 3: {security.HasAccess(3)}");
+            Console.WriteLine($"Имеет уровень доступа 1: {security.HasAccess(1)}");
+        }
+
+        static void DemonstratePreventInheritance()
+        {
+            Console.WriteLine("\n=== 3. SEALED ДЛЯ ПРЕДОТВРАЩЕНИЯ НАСЛЕДОВАНИЯ ===");
+
+            MathCalculator calculator = new MathCalculator();
+
+            Console.WriteLine($"Площадь круга с радиусом 5: {calculator.CalculateCircleArea(5):F2}");
+            Console.WriteLine($"Длина окружности с радиусом 5: {calculator.CalculateCircleCircumference(5):F2}");
+            Console.WriteLine($"Площадь прямоугольника 4x6: {calculator.CalculateRectangleArea(4, 6):F2}");
+            Console.WriteLine($"Площадь треугольника с основанием 8 и высотой 5: {calculator.CalculateTriangleArea(8, 5):F2}");
+
+            Console.WriteLine($"45 градусов в радианах: {MathCalculator.DegreesToRadians(45):F4}");
+            Console.WriteLine($"π/4 радиан в градусах: {MathCalculator.RadiansToDegrees(MathCalculator.PI / 4):F1}");
+        }
+
+        static void DemonstrateCannotOverrideSealedMethod()
+        {
+            Console.WriteLine("\n=== 4. НЕВОЗМОЖНОСТЬ OVERRIDE SEALED МЕТОДА ===");
+
+            DerivedClass derived = new DerivedClass();
+            derived.NormalMethod();
+            derived.MethodForSealing();
+
+            FurtherDerivedClass further = new FurtherDerivedClass();
+            further.NormalMethod();
+            further.MethodForSealing();
+
+            Console.WriteLine("MethodForSealing sealed в DerivedClass и не может быть переопределен в FurtherDerivedClass");
+        }
+
+        static void DemonstrateSealedWithPublicMethod()
+        {
+            Console.WriteLine("\n=== 5. SEALED КЛАСС С ПУБЛИЧНЫМ МЕТОДОМ ===");
+
+            Validator validator = new Validator();
+
+            Console.WriteLine($"Email 'test@example.com' валиден: {validator.IsValidEmail("test@example.com")}");
+            Console.WriteLine($"Email 'invalid' валиден: {validator.IsValidEmail("invalid")}");
+
+            Console.WriteLine($"Телефон '+7 (123) 456-7890' валиден: {validator.IsValidPhoneNumber("+7 (123) 456-7890")}");
+            Console.WriteLine($"Телефон 'abc' валиден: {validator.IsValidPhoneNumber("abc")}");
+
+            Console.WriteLine($"Пароль 'StrongPass123!' надежный: {validator.IsStrongPassword("StrongPass123!")}");
+            Console.WriteLine($"Пароль 'weak' надежный: {validator.IsStrongPassword("weak")}");
+
+            Console.WriteLine($"15 в диапазоне 10-20: {validator.IsInRange(15, 10, 20)}");
+            Console.WriteLine($"25 в диапазоне 10-20: {validator.IsInRange(25, 10, 20)}");
+        }
+
+        static void DemonstrateSealedWithConstructorRestriction()
+        {
+            Console.WriteLine("\n=== 6. SEALED КЛАСС С ОГРАНИЧЕНИЕМ НА КОНСТРУКТОР ===");
+
+            Configuration config = Configuration.Instance;
+
+            Console.WriteLine($"Строка подключения: {config.ConnectionString}");
+            Console.WriteLine($"Таймаут: {config.Timeout} секунд");
+            Console.WriteLine($"Режим отладки: {config.IsDebug}");
+
+            config.SetDebugMode(false);
+            config.UpdateConnectionString("Server=prod;Database=Production;Trusted_Connection=true;");
+
+            Console.WriteLine($"После обновления - Режим отладки: {config.IsDebug}");
+            Console.WriteLine($"После обновления - Строка подключения: {config.ConnectionString}");
+        }
+
+        static void DemonstrateSealedForLogging()
+        {
+            Console.WriteLine("\n=== 7. SEALED КЛАСС ДЛЯ ЛОГИРОВАНИЯ ===");
+
+            Logger logger = Logger.Instance;
+
+            logger.Log("Начало процесса логирования");
+            logger.Warning("Обнаружена потенциальная проблема");
+            logger.Error("Произошла критическая ошибка");
+            logger.Log("Завершение процесса логирования");
+        }
+
+        static void DemonstrateSealedForConfidentialData()
+        {
+            Console.WriteLine("\n=== 8. SEALED КЛАСС ДЛЯ КОНФИДЕНЦИАЛЬНЫХ ДАННЫХ ===");
+
+            SecurityManager security = new SecurityManager("superSecretKey!@#", 5);
+
+            string sensitiveData = "Пароль: 123456; Кредитная карта: 4111111111111111";
+            string encrypted = security.Encrypt(sensitiveData);
+
+            Console.WriteLine($"Конфиденциальные данные: {sensitiveData}");
+            Console.WriteLine($"Зашифровано: {encrypted}");
+            Console.WriteLine($"Расшифровано: {security.Decrypt(encrypted)}");
+
+            Console.WriteLine($"Уровень доступа 3: {security.HasAccess(3)}");
+            Console.WriteLine($"Уровень доступа 7: {security.HasAccess(7)}");
+        }
+
+        static void DemonstrateSealedWithProtectedProperties()
+        {
+            Console.WriteLine("\n=== 9. SEALED КЛАСС С ЗАЩИЩЁННЫМИ СВОЙСТВАМИ ===");
+
+            PaymentProcessor processor = new PaymentProcessor(1000.00m);
+
+            Console.WriteLine($"Начальный баланс: {processor.GetBalance():C}");
+
+            processor.ProcessPayment(250.50m, "Кредитная карта");
+            processor.ProcessPayment(100.00m, "PayPal");
+            processor.AddFunds(500.00m);
+            processor.ProcessPayment(1200.00m, "Банковский перевод");
+
+            Console.WriteLine($"Финальный баланс: {processor.GetBalance():C}");
+        }
+
+        static void DemonstrateSealedForControlObjects()
+        {
+            Console.WriteLine("\n=== 10. SEALED КЛАСС ДЛЯ КОНТРОЛЬНЫХ ОБЪЕКТОВ ===");
+
+            AuditTrail audit = new AuditTrail();
+            SystemMonitor monitor = new SystemMonitor();
+
+            audit.AddEntry("Вход", "user1");
+            audit.AddEntry("Создание документа", "user1");
+            audit.AddEntry("Выход", "user1");
+            audit.AddEntry("Вход", "admin");
+            audit.DisplayAuditLog();
+
+            monitor.ReportWarning("Обнаружено высокое использование памяти");
+            monitor.ReportError("Ошибка подключения к базе данных");
+            monitor.ReportWarning("Температура ЦП выше порогового значения");
+            monitor.GenerateReport();
+
+            monitor.Reset();
+            monitor.GenerateReport();
+        }
+
+        static void DemonstrateAllSealedExamples()
+        {
+            Console.WriteLine("\n=== ПОЛНАЯ ДЕМОНСТРАЦИЯ SEALED КЛАССОВ ===\n");
+
+            DemonstrateSealedInheritanceAttempt();
+            DemonstrateSealedWithPrivateMethod();
+            DemonstratePreventInheritance();
+            DemonstrateCannotOverrideSealedMethod();
+            DemonstrateSealedWithPublicMethod();
+            DemonstrateSealedWithConstructorRestriction();
+            DemonstrateSealedForLogging();
+            DemonstrateSealedForConfidentialData();
+            DemonstrateSealedWithProtectedProperties();
+            DemonstrateSealedForControlObjects();
+
+            Console.WriteLine("\n=== ВСЕ ДЕМОНСТРАЦИИ SEALED КЛАССОВ ЗАВЕРШЕНЫ ===");
+        }
+    }
+}
+```

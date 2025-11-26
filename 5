@@ -1,0 +1,428 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp4
+{
+    using System;
+
+    public class Animal
+    {
+        public string Name { get; set; }
+
+        public Animal(string name)
+        {
+            Name = name;
+        }
+
+        public virtual void MakeSound()
+        {
+            Console.WriteLine($"{Name} издает звук");
+        }
+    }
+
+    public class Dog : Animal
+    {
+        public Dog(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} лает: Гав-гав!");
+        }
+
+        public void Fetch()
+        {
+            Console.WriteLine($"{Name} приносит палку");
+        }
+
+        public void BarkLoudly()
+        {
+            Console.WriteLine($"{Name} громко лает: ГАВ-ГАВ-ГАВ!");
+        }
+    }
+
+    public class Cat : Animal
+    {
+        public Cat(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} мяукает: Мяу-мяу!");
+        }
+
+        public void Purr()
+        {
+            Console.WriteLine($"{Name} мурлычет: Мррррр...");
+        }
+
+        public void ClimbTree()
+        {
+            Console.WriteLine($"{Name} лазает по дереву");
+        }
+    }
+
+    public class Bird : Animal
+    {
+        public Bird(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} чирикает: Чик-чирик!");
+        }
+
+        public void Fly()
+        {
+            Console.WriteLine($"{Name} летает в небе");
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nВыберите демонстрацию (1-10):");
+                Console.WriteLine("1. Явное преобразование через cast");
+                Console.WriteLine("2. Оператор as для приведения типов");
+                Console.WriteLine("3. Проверка типа с оператором is перед приведением");
+                Console.WriteLine("4. Cast с проверкой null после as");
+                Console.WriteLine("5. Try-catch для обработки ошибочного downcast");
+                Console.WriteLine("6. Безопасный cast с is/as");
+                Console.WriteLine("7. Доступ к методам производного класса после приведения");
+                Console.WriteLine("8. Проверка exception при некорректном приведении");
+                Console.WriteLine("9. Явное приведение для downcast");
+                Console.WriteLine("10. Downcast и вызов специфичных методов");
+                Console.WriteLine("0. Все демонстрации");
+
+                Console.Write("Ваш выбор: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DemonstrateExplicitCast();
+                        break;
+                    case "2":
+                        DemonstrateAsOperator();
+                        break;
+                    case "3":
+                        DemonstrateIsOperatorCheck();
+                        break;
+                    case "4":
+                        DemonstrateNullCheckAfterAs();
+                        break;
+                    case "5":
+                        DemonstrateTryCatchForDowncast();
+                        break;
+                    case "6":
+                        DemonstrateSafeCastWithIsAs();
+                        break;
+                    case "7":
+                        DemonstrateAccessToDerivedMethods();
+                        break;
+                    case "8":
+                        DemonstrateCastException();
+                        break;
+                    case "9":
+                        DemonstrateExplicitDowncast();
+                        break;
+                    case "10":
+                        DemonstrateDowncastAndMethodCall();
+                        break;
+                    case "0":
+                        DemonstrateAllDowncasts();
+                        break;
+                    default:
+                        Console.WriteLine("Неверный выбор, попробуйте снова");
+                        break;
+                }
+            }
+        }
+
+        static void DemonstrateExplicitCast()
+        {
+            Console.WriteLine("\n=== 1. ЯВНОЕ ПРЕОБРАЗОВАНИЕ ЧЕРЕЗ CAST ===");
+
+            Animal animal = new Dog("Рекс");
+
+            Dog dog = (Dog)animal;
+            Console.WriteLine("Явное приведение выполнено успешно:");
+            dog.MakeSound();
+            dog.Fetch();
+        }
+
+        static void DemonstrateAsOperator()
+        {
+            Console.WriteLine("\n=== 2. ОПЕРАТОР AS ДЛЯ ПРИВЕДЕНИЯ ТИПОВ ===");
+
+            Animal animal1 = new Dog("Барсик");
+            Animal animal2 = new Cat("Мурзик");
+
+            Dog dog = animal1 as Dog;
+            if (dog != null)
+            {
+                Console.WriteLine("Приведение as Dog успешно:");
+                dog.BarkLoudly();
+            }
+
+            Cat cat = animal2 as Cat;
+            if (cat != null)
+            {
+                Console.WriteLine("Приведение as Cat успешно:");
+                cat.Purr();
+            }
+        }
+
+        static void DemonstrateIsOperatorCheck()
+        {
+            Console.WriteLine("\n=== 3. ПРОВЕРКА ТИПА С ОПЕРАТОРОМ IS ПЕРЕД ПРИВЕДЕНИЕМ ===");
+
+            Animal animal = new Dog("Шарик");
+
+            if (animal is Dog)
+            {
+                Dog dog = (Dog)animal;
+                Console.WriteLine("Проверка is выполнена - это собака:");
+                dog.Fetch();
+            }
+
+            if (animal is Cat)
+            {
+                Cat cat = (Cat)animal;
+                Console.WriteLine("Это кот:");
+                cat.ClimbTree();
+            }
+            else
+            {
+                Console.WriteLine("Это не кот - проверка is вернула false");
+            }
+        }
+
+        static void DemonstrateNullCheckAfterAs()
+        {
+            Console.WriteLine("\n=== 4. CAST С ПРОВЕРКОЙ NULL ЗНАЧЕНИЯ ПОСЛЕ AS ===");
+
+            Animal animal1 = new Dog("Бим");
+            Animal animal2 = new Bird("Кеша");
+
+            Dog dog = animal1 as Dog;
+            if (dog != null)
+            {
+                Console.WriteLine("animal1 успешно приведен к Dog:");
+                dog.BarkLoudly();
+            }
+            else
+            {
+                Console.WriteLine("animal1 не может быть приведен к Dog");
+            }
+
+            Cat cat = animal2 as Cat;
+            if (cat == null)
+            {
+                Console.WriteLine("animal2 не может быть приведен к Cat - результат null");
+            }
+        }
+
+        static void DemonstrateTryCatchForDowncast()
+        {
+            Console.WriteLine("\n=== 5. TRY-CATCH ДЛЯ ОБРАБОТКИ ОШИБОЧНОГО DOWNCAST ===");
+
+            Animal animal = new Bird("Чижик");
+
+            try
+            {
+                Dog dog = (Dog)animal;
+                Console.WriteLine("Приведение успешно:");
+                dog.Fetch();
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine($"Ошибка приведения: {ex.Message}");
+            }
+
+            try
+            {
+                Cat cat = (Cat)animal;
+                Console.WriteLine("Приведение успешно:");
+                cat.Purr();
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine($"Ошибка приведения: {ex.Message}");
+            }
+        }
+
+        static void DemonstrateSafeCastWithIsAs()
+        {
+            Console.WriteLine("\n=== 6. БЕЗОПАСНЫЙ CAST С IS/AS ===");
+
+            List<Animal> animals = new List<Animal>
+        {
+            new Dog("Рекс"),
+            new Cat("Васька"),
+            new Bird("Кеша"),
+            new Dog("Барбос")
+        };
+
+            foreach (Animal animal in animals)
+            {
+                if (animal is Dog dog)
+                {
+                    Console.WriteLine($"Найдена собака {dog.Name}:");
+                    dog.Fetch();
+                }
+                else if (animal is Cat cat)
+                {
+                    Console.WriteLine($"Найден кот {cat.Name}:");
+                    cat.Purr();
+                }
+                else
+                {
+                    Console.WriteLine($"Это {animal.GetType().Name} {animal.Name}:");
+                    animal.MakeSound();
+                }
+            }
+        }
+
+        static void DemonstrateAccessToDerivedMethods()
+        {
+            Console.WriteLine("\n=== 7. ДОСТУП К МЕТОДАМ ПРОИЗВОДНОГО КЛАССА ПОСЛЕ ПРИВЕДЕНИЯ ===");
+
+            Animal animal = new Cat("Мурка");
+
+            animal.MakeSound();
+
+            if (animal is Cat cat)
+            {
+                cat.Purr();
+                cat.ClimbTree();
+            }
+
+            Animal animal2 = new Dog("Тузик");
+
+            Dog dog = animal2 as Dog;
+            if (dog != null)
+            {
+                dog.BarkLoudly();
+                dog.Fetch();
+            }
+        }
+
+        static void DemonstrateCastException()
+        {
+            Console.WriteLine("\n=== 8. ПРОВЕРКА EXCEPTION ПРИ НЕКОРРЕКТНОМ ПРИВЕДЕНИИ ===");
+
+            Animal animal = new Bird("Попугай");
+
+            Console.WriteLine("Попытка некорректного приведения Bird к Dog:");
+            try
+            {
+                Dog dog = (Dog)animal;
+                Console.WriteLine("Успешно (этот текст не должен появиться)");
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine($"Поймано исключение: {ex.GetType().Name}");
+                Console.WriteLine($"Сообщение: {ex.Message}");
+            }
+
+            Console.WriteLine("\nПопытка некорректного приведения Bird к Cat:");
+            try
+            {
+                Cat cat = (Cat)animal;
+                Console.WriteLine("Успешно (этот текст не должен появиться)");
+            }
+            catch (InvalidCastException ex)
+            {
+                Console.WriteLine($"Поймано исключение: {ex.GetType().Name}");
+            }
+        }
+
+        static void DemonstrateExplicitDowncast()
+        {
+            Console.WriteLine("\n=== 9. ЯВНОЕ ПРИВЕДЕНИЕ ДЛЯ DOWNCAST ===");
+
+            Animal animal1 = new Dog("Бадди");
+            Animal animal2 = new Cat("Снежок");
+
+            Console.WriteLine("Явное приведение Animal к Dog:");
+            Dog dog = (Dog)animal1;
+            dog.BarkLoudly();
+
+            Console.WriteLine("Явное приведение Animal к Cat:");
+            Cat cat = (Cat)animal2;
+            cat.ClimbTree();
+
+            Animal animal3 = new Dog("Лорд");
+            if (animal3 is Dog)
+            {
+                Dog specificDog = (Dog)animal3;
+                Console.WriteLine("Явное приведение после проверки типа:");
+                specificDog.Fetch();
+            }
+        }
+
+        static void DemonstrateDowncastAndMethodCall()
+        {
+            Console.WriteLine("\n=== 10. DOWNCAST И ВЫЗОВ СПЕЦИФИЧНЫХ МЕТОДОВ ===");
+
+            List<Animal> animals = new List<Animal>
+        {
+            new Dog("Рекс"),
+            new Cat("Мурзик"),
+            new Dog("Бобик"),
+            new Bird("Кеша"),
+            new Cat("Базилио")
+        };
+
+            foreach (Animal animal in animals)
+            {
+                Console.WriteLine($"\nОбрабатываем {animal.Name}:");
+                animal.MakeSound();
+
+                switch (animal)
+                {
+                    case Dog dog:
+                        Console.WriteLine("Специфичные методы Dog:");
+                        dog.Fetch();
+                        dog.BarkLoudly();
+                        break;
+                    case Cat cat:
+                        Console.WriteLine("Специфичные методы Cat:");
+                        cat.Purr();
+                        cat.ClimbTree();
+                        break;
+                    case Bird bird:
+                        Console.WriteLine("Специфичные методы Bird:");
+                        bird.Fly();
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестный тип животного");
+                        break;
+                }
+            }
+        }
+
+        static void DemonstrateAllDowncasts()
+        {
+            Console.WriteLine("\n=== ПОЛНАЯ ДЕМОНСТРАЦИЯ ВСЕХ ВИДОВ DOWNCAST ===\n");
+
+            DemonstrateExplicitCast();
+            DemonstrateAsOperator();
+            DemonstrateIsOperatorCheck();
+            DemonstrateNullCheckAfterAs();
+            DemonstrateTryCatchForDowncast();
+            DemonstrateSafeCastWithIsAs();
+            DemonstrateAccessToDerivedMethods();
+            DemonstrateCastException();
+            DemonstrateExplicitDowncast();
+            DemonstrateDowncastAndMethodCall();
+
+            Console.WriteLine("\n=== ВСЕ ДЕМОНСТРАЦИИ DOWNCAST ЗАВЕРШЕНЫ ===");
+        }
+    }
+}

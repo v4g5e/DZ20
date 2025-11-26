@@ -1,0 +1,549 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp4
+{
+    using System;
+
+    public class Animal
+    {
+        public string Name { get; set; }
+
+        public Animal(string name)
+        {
+            Name = name;
+        }
+
+        public virtual void MakeSound()
+        {
+            Console.WriteLine($"{Name} издает звук");
+        }
+
+        public void Eat()
+        {
+            Console.WriteLine($"{Name} ест");
+        }
+    }
+
+    public class Dog : Animal
+    {
+        public Dog(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} лает: Гав-гав!");
+        }
+
+        public void Bark()
+        {
+            Console.WriteLine($"{Name} громко лает!");
+        }
+
+        public void Fetch()
+        {
+            Console.WriteLine($"{Name} приносит палку");
+        }
+    }
+
+    public class Cat : Animal
+    {
+        public Cat(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} мяукает: Мяу-мяу!");
+        }
+
+        public void Purr()
+        {
+            Console.WriteLine($"{Name} мурлычет");
+        }
+    }
+
+    public class Bird : Animal, IFlyable
+    {
+        public Bird(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} чирикает: Чик-чирик!");
+        }
+
+        public int MaxAltitude => 500;
+
+        public void Fly()
+        {
+            Console.WriteLine($"{Name} летает на высоте до {MaxAltitude} метров");
+        }
+    }
+
+    public abstract class Shape
+    {
+        public string Name { get; set; }
+
+        public Shape(string name)
+        {
+            Name = name;
+        }
+
+        public abstract double GetArea();
+
+        public virtual void Display()
+        {
+            Console.WriteLine($"Фигура: {Name}");
+        }
+    }
+
+    public class Circle : Shape
+    {
+        public double Radius { get; set; }
+
+        public Circle(string name, double radius) : base(name)
+        {
+            Radius = radius;
+        }
+
+        public override double GetArea()
+        {
+            return Math.PI * Radius * Radius;
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Круг: {Name}, Радиус: {Radius}, Площадь: {GetArea():F2}");
+        }
+    }
+
+    public class Rectangle : Shape
+    {
+        public double Width { get; set; }
+        public double Height { get; set; }
+
+        public Rectangle(string name, double width, double height) : base(name)
+        {
+            Width = width;
+            Height = height;
+        }
+
+        public override double GetArea()
+        {
+            return Width * Height;
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Прямоугольник: {Name}, Размер: {Width}x{Height}, Площадь: {GetArea():F2}");
+        }
+    }
+
+    public interface IFlyable
+    {
+        void Fly();
+        int MaxAltitude { get; }
+    }
+
+    public interface ISwimmable
+    {
+        void Swim();
+        int MaxDepth { get; }
+    }
+
+    public class Duck : Animal, IFlyable, ISwimmable
+    {
+        public Duck(string name) : base(name) { }
+
+        public override void MakeSound()
+        {
+            Console.WriteLine($"{Name} крякает: Кря-кря!");
+        }
+
+        public int MaxAltitude => 1000;
+        public int MaxDepth => 5;
+
+        public void Fly()
+        {
+            Console.WriteLine($"{Name} летает на высоте до {MaxAltitude} метров");
+        }
+
+        public void Swim()
+        {
+            Console.WriteLine($"{Name} плавает на глубине до {MaxDepth} метров");
+        }
+    }
+
+    public class Airplane : IFlyable
+    {
+        public string Model { get; set; }
+        public int MaxAltitude => 12000;
+
+        public Airplane(string model)
+        {
+            Model = model;
+        }
+
+        public void Fly()
+        {
+            Console.WriteLine($"Самолет {Model} летит на высоте {MaxAltitude} метров");
+        }
+    }
+
+    public class AnimalShelter
+    {
+        public static void CareForAnimal(Animal animal)
+        {
+            Console.WriteLine($"Заботимся о {animal.Name}:");
+            animal.MakeSound();
+            animal.Eat();
+            Console.WriteLine();
+        }
+
+        public static void MakeItFly(IFlyable flyable)
+        {
+            Console.WriteLine("Запускаем в полет:");
+            flyable.Fly();
+            Console.WriteLine();
+        }
+
+        public static void MakeItSwim(ISwimmable swimmable)
+        {
+            Console.WriteLine("Отправляем плавать:");
+            swimmable.Swim();
+            Console.WriteLine();
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nВыберите демонстрацию (1-10):");
+                Console.WriteLine("1. Простой upcast (Animal animal = new Dog())");
+                Console.WriteLine("2. Upcast с интерфейсами");
+                Console.WriteLine("3. Upcast для коллекций");
+                Console.WriteLine("4. Передача производного объекта методу базового типа");
+                Console.WriteLine("5. Массив базового типа с производными объектами");
+                Console.WriteLine("6. Upcast с абстрактным классом");
+                Console.WriteLine("7. Вызов базовых методов от производного объекта");
+                Console.WriteLine("8. Сохранение ссылки на производный объект как на базовый");
+                Console.WriteLine("9. Преобразование и вызов методов");
+                Console.WriteLine("10. Всегда доступное присваивание производного базовому");
+                Console.WriteLine("0. Все демонстрации");
+
+                Console.Write("Ваш выбор: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DemonstrateSimpleUpcast();
+                        break;
+                    case "2":
+                        DemonstrateInterfaceUpcast();
+                        break;
+                    case "3":
+                        DemonstrateCollectionUpcast();
+                        break;
+                    case "4":
+                        DemonstrateMethodParameterUpcast();
+                        break;
+                    case "5":
+                        DemonstrateArrayUpcast();
+                        break;
+                    case "6":
+                        DemonstrateAbstractClassUpcast();
+                        break;
+                    case "7":
+                        DemonstrateBaseMethodCall();
+                        break;
+                    case "8":
+                        DemonstrateReferenceSaving();
+                        break;
+                    case "9":
+                        DemonstrateConversionAndMethodCall();
+                        break;
+                    case "10":
+                        DemonstrateAlwaysAvailableAssignment();
+                        break;
+                    case "0":
+                        DemonstrateAllUpcasts();
+                        break;
+                    default:
+                        Console.WriteLine("Неверный выбор, попробуйте снова");
+                        break;
+                }
+            }
+        }
+
+        static void DemonstrateSimpleUpcast()
+        {
+            Console.WriteLine("\n=== 1. ПРОСТОЙ UPCAST ===");
+
+            Animal animal1 = new Dog("Барсик");
+            Animal animal2 = new Cat("Мурзик");
+            Animal animal3 = new Bird("Кеша");
+
+            Console.WriteLine("Созданы животные через upcast:");
+            animal1.MakeSound();
+            animal2.MakeSound();
+            animal3.MakeSound();
+
+            animal1.Eat();
+            animal2.Eat();
+            animal3.Eat();
+        }
+
+        static void DemonstrateInterfaceUpcast()
+        {
+            Console.WriteLine("\n=== 2. UPCAST С ИНТЕРФЕЙСАМИ ===");
+
+            IFlyable flyable1 = new Duck("Дональд");
+            IFlyable flyable2 = new Airplane("Боинг-747");
+
+            ISwimmable swimmable = new Duck("Скрудж");
+
+            Console.WriteLine("Объекты приведены к интерфейсам:");
+            flyable1.Fly();
+            flyable2.Fly();
+            swimmable.Swim();
+
+            AnimalShelter.MakeItFly(flyable1);
+            AnimalShelter.MakeItFly(flyable2);
+            AnimalShelter.MakeItSwim(swimmable);
+        }
+
+        static void DemonstrateCollectionUpcast()
+        {
+            Console.WriteLine("\n=== 3. UPCAST ДЛЯ КОЛЛЕКЦИЙ ===");
+
+            List<Animal> animals = new List<Animal>
+        {
+            new Dog("Рекс"),
+            new Cat("Васька"),
+            new Bird("Гоша"),
+            new Duck("Кряк")
+        };
+
+            Console.WriteLine("Коллекция животных (upcast):");
+            foreach (Animal animal in animals)
+            {
+                animal.MakeSound();
+                animal.Eat();
+            }
+
+            List<IFlyable> flyables = new List<IFlyable>
+        {
+            new Duck("Утка"),
+            new Airplane("Аэробус"),
+            (IFlyable)new Bird("Попугай")
+        };
+
+            Console.WriteLine("\nКоллекция летающих объектов:");
+            foreach (IFlyable flyable in flyables)
+            {
+                flyable.Fly();
+            }
+        }
+
+        static void DemonstrateMethodParameterUpcast()
+        {
+            Console.WriteLine("\n=== 4. ПЕРЕДАЧА ПРОИЗВОДНОГО ОБЪЕКТА МЕТОДУ БАЗОВОГО ТИПА ===");
+
+            Dog dog = new Dog("Шарик");
+            Cat cat = new Cat("Матроскин");
+            Bird bird = new Bird("Кеша");
+
+            AnimalShelter.CareForAnimal(dog);
+            AnimalShelter.CareForAnimal(cat);
+            AnimalShelter.CareForAnimal(bird);
+
+            Duck duck = new Duck("Дейзи");
+            AnimalShelter.MakeItFly(duck);
+            AnimalShelter.MakeItSwim(duck);
+        }
+
+        static void DemonstrateArrayUpcast()
+        {
+            Console.WriteLine("\n=== 5. МАССИВ БАЗОВОГО ТИПА С ПРОИЗВОДНЫМИ ОБЪЕКТАМИ ===");
+
+            Animal[] zoo = new Animal[4];
+
+            zoo[0] = new Dog("Бобик");
+            zoo[1] = new Cat("Пушок");
+            zoo[2] = new Bird("Кара");
+            zoo[3] = new Duck("Кряква");
+
+            Console.WriteLine("Зоопарк (массив базового типа):");
+            for (int i = 0; i < zoo.Length; i++)
+            {
+                Console.Write($"{i + 1}. ");
+                zoo[i].MakeSound();
+            }
+
+            IFlyable[] flyingObjects = new IFlyable[3];
+            flyingObjects[0] = new Bird("Сокол");
+            flyingObjects[1] = new Duck("Селезень");
+            flyingObjects[2] = new Airplane("Ил-76");
+
+            Console.WriteLine("\nЛетающие объекты:");
+            foreach (var obj in flyingObjects)
+            {
+                obj.Fly();
+            }
+        }
+
+        static void DemonstrateAbstractClassUpcast()
+        {
+            Console.WriteLine("\n=== 6. UPCAST С АБСТРАКТНЫМ КЛАССОМ ===");
+
+            Shape shape1 = new Circle("Круглый", 5.0);
+            Shape shape2 = new Rectangle("Прямой", 4.0, 6.0);
+
+            List<Shape> shapes = new List<Shape> { shape1, shape2 };
+
+            Console.WriteLine("Фигуры (upcast к абстрактному классу):");
+            foreach (Shape shape in shapes)
+            {
+                shape.Display();
+                Console.WriteLine($"Площадь: {shape.GetArea():F2}");
+            }
+        }
+
+        static void DemonstrateBaseMethodCall()
+        {
+            Console.WriteLine("\n=== 7. ВЫЗОВ БАЗОВЫХ МЕТОДОВ ОТ ПРОИЗВОДНОГО ОБЪЕКТА ===");
+
+            Dog dog = new Dog("Рекс");
+            Animal animal = dog;
+
+            Console.WriteLine("Вызов методов через производную ссылку:");
+            dog.MakeSound();
+            dog.Bark();
+            dog.Eat();
+
+            Console.WriteLine("\nВызов методов через базовую ссылку (после upcast):");
+            animal.MakeSound();
+            animal.Eat();
+        }
+
+        static void DemonstrateReferenceSaving()
+        {
+            Console.WriteLine("\n=== 8. СОХРАНЕНИЕ ССЫЛКИ НА ПРОИЗВОДНЫЙ ОБЪЕКТ КАК НА БАЗОВЫЙ ===");
+
+            Dog originalDog = new Dog("Бадди");
+
+            Animal savedAsAnimal = originalDog;
+            object savedAsObject = originalDog;
+
+            Console.WriteLine($"Исходный тип: {originalDog.GetType()}");
+            Console.WriteLine($"Сохранен как Animal: {savedAsAnimal.GetType()}");
+            Console.WriteLine($"Сохранен как Object: {savedAsObject.GetType()}");
+
+            Console.WriteLine("\nДемонстрация, что это тот же объект:");
+            originalDog.Name = "Новый Бадди";
+            Console.WriteLine($"Имя через originalDog: {originalDog.Name}");
+            Console.WriteLine($"Имя через savedAsAnimal: {savedAsAnimal.Name}");
+
+            savedAsAnimal.MakeSound();
+        }
+
+        static void DemonstrateConversionAndMethodCall()
+        {
+            Console.WriteLine("\n=== 9. ПРЕОБРАЗОВАНИЕ И ВЫЗОВ МЕТОДОВ ===");
+
+            Dog dog = new Dog("Шарик");
+            Cat cat = new Cat("Мурка");
+
+            Animal animal1 = (Animal)dog;
+            Animal animal2 = cat;
+
+            Console.WriteLine("Методы после upcast:");
+            animal1.MakeSound();
+            animal2.MakeSound();
+
+            List<Animal> animals = new List<Animal> { dog, cat, new Bird("Кеша") };
+
+            Console.WriteLine("\nОбработка через базовый тип:");
+            foreach (Animal animal in animals)
+            {
+                ProcessAnimal(animal);
+            }
+        }
+
+        static void ProcessAnimal(Animal animal)
+        {
+            Console.WriteLine($"Обрабатываем {animal.Name}:");
+            animal.MakeSound();
+
+            if (animal is Dog dog)
+            {
+                dog.Bark();
+            }
+            else if (animal is Cat cat)
+            {
+                cat.Purr();
+            }
+            else if (animal is Bird bird)
+            {
+                ((IFlyable)bird).Fly();
+            }
+        }
+
+        static void DemonstrateAlwaysAvailableAssignment()
+        {
+            Console.WriteLine("\n=== 10. ВСЕГДА ДОСТУПНОЕ ПРИСВАИВАНИЕ ПРОИЗВОДНОГО БАЗОВОМУ ===");
+
+            Animal animal1 = new Dog("Рекс");
+            Console.WriteLine($"1. Dog -> Animal: {animal1.GetType()}");
+
+            Dog dog = new Dog("Бим");
+            Animal animal2 = dog;
+            Console.WriteLine($"2. Dog variable -> Animal: {animal2.GetType()}");
+
+            Animal animal3 = CreateAnimal();
+            Console.WriteLine($"3. Return from method -> Animal: {animal3.GetType()}");
+
+            List<Animal> animals = new List<Animal> { new Cat("Васька"), new Bird("Гоша") };
+            Console.WriteLine($"4. In collection: {animals[0].GetType()}, {animals[1].GetType()}");
+
+            object obj = new Dog("Тузик");
+            Console.WriteLine($"5. Dog -> Object: {obj.GetType()}");
+
+            Animal animal4 = new Duck("Скрудж");
+            Console.WriteLine($"6. Duck -> Animal: {animal4.GetType()}");
+
+            IFlyable flyable = (IFlyable)new Bird("Сокол");
+            Console.WriteLine($"7. Bird -> IFlyable: {flyable.GetType()}");
+
+            Console.WriteLine("\nВсе преобразования выполнены успешно - upcast всегда доступен!");
+        }
+
+        static Animal CreateAnimal()
+        {
+            return new Cat("Мурзик");
+        }
+
+        static void DemonstrateAllUpcasts()
+        {
+            Console.WriteLine("\n=== ПОЛНАЯ ДЕМОНСТРАЦИЯ ВСЕХ ВИДОВ UPCAST ===\n");
+
+            DemonstrateSimpleUpcast();
+            DemonstrateInterfaceUpcast();
+            DemonstrateCollectionUpcast();
+            DemonstrateMethodParameterUpcast();
+            DemonstrateArrayUpcast();
+            DemonstrateAbstractClassUpcast();
+            DemonstrateBaseMethodCall();
+            DemonstrateReferenceSaving();
+            DemonstrateConversionAndMethodCall();
+            DemonstrateAlwaysAvailableAssignment();
+
+            Console.WriteLine("\n=== ВСЕ ДЕМОНСТРАЦИИ UPCAST ЗАВЕРШЕНЫ ===");
+        }
+    }
+}

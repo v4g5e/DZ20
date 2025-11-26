@@ -1,0 +1,591 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp4
+{
+    using System;
+
+    public class Person
+    {
+        protected string name;
+        protected int age;
+        protected string id;
+
+        public Person()
+        {
+            this.name = "Неизвестно";
+            this.age = 0;
+            this.id = "000000";
+            Console.WriteLine("Вызван конструктор Person() по умолчанию");
+        }
+
+        public Person(string name, int age)
+        {
+            this.name = name;
+            this.age = age;
+            this.id = GenerateId();
+            Console.WriteLine($"Вызван конструктор Person({name}, {age})");
+        }
+
+        public Person(string name, int age, string id)
+        {
+            this.name = name;
+            this.age = age;
+            this.id = id;
+            Console.WriteLine($"Вызван конструктор Person({name}, {age}, {id})");
+        }
+
+        private string GenerateId()
+        {
+            return Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+        }
+
+        public virtual void DisplayInfo()
+        {
+            Console.WriteLine($"Person: {name}, Возраст: {age}, ID: {id}");
+        }
+    }
+
+    public class Student : Person
+    {
+        private string studentId;
+        private string major;
+        private double gpa;
+
+        public Student(string name, int age, string major)
+            : base(name, age) 
+        {
+            this.major = major;
+            this.studentId = "ST" + id;
+            this.gpa = 0.0;
+            Console.WriteLine($"Вызван конструктор Student({name}, {age}, {major})");
+        }
+
+        public Student(string name, int age, string major, double gpa)
+            : base(name, age) 
+        {
+            this.major = major;
+            this.gpa = gpa;
+            this.studentId = "ST" + id;
+            Console.WriteLine($"Вызван конструктор Student({name}, {age}, {major}, {gpa})");
+        }
+
+        public Student(string name, int age, string id, string studentId, string major)
+            : base(name, age, id) 
+        {
+            this.studentId = studentId;
+            this.major = major;
+            this.gpa = 0.0;
+            Console.WriteLine($"Вызван конструктор Student с полной инициализацией");
+        }
+
+        public void SetName(string newName)
+        {
+            name = newName; 
+        }
+
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Student: {name}, Возраст: {age}, ID: {id}");
+            Console.WriteLine($"  Специальность: {major}, GPA: {gpa}, StudentID: {studentId}");
+        }
+    }
+
+    public class Vehicle
+    {
+        protected string brand;
+        protected int year;
+        protected string vin;
+
+        public Vehicle()
+        {
+            this.brand = "Unknown";
+            this.year = DateTime.Now.Year;
+            this.vin = "VIN00000000000000";
+            Console.WriteLine("Vehicle() конструктор по умолчанию");
+        }
+
+        public Vehicle(string brand, int year) : this()
+        {
+            this.brand = brand;
+            this.year = year;
+            Console.WriteLine($"Vehicle({brand}, {year}) конструктор");
+        }
+
+        public Vehicle(string brand, int year, string vin) : this(brand, year)
+        {
+            this.vin = vin;
+            Console.WriteLine($"Vehicle({brand}, {year}, {vin}) конструктор");
+        }
+
+        public virtual void DisplayInfo()
+        {
+            Console.WriteLine($"Vehicle: {brand}, Год: {year}, VIN: {vin}");
+        }
+    }
+
+    public class Car : Vehicle
+    {
+        private int doors;
+        private string model;
+
+        public Car() : base()
+        {
+            this.doors = 4;
+            this.model = "Unknown";
+            Console.WriteLine("Car() конструктор по умолчанию");
+        }
+
+        public Car(string brand, string model) : this(brand, model, DateTime.Now.Year, 4)
+        {
+            Console.WriteLine($"Car({brand}, {model}) конструктор");
+        }
+
+        public Car(string brand, string model, int year, int doors) : base(brand, year)
+        {
+            this.model = model;
+            this.doors = doors;
+            Console.WriteLine($"Car({brand}, {model}, {year}, {doors}) конструктор");
+        }
+
+        public void InitializeVehicle(string newBrand, int newYear)
+        {
+            brand = newBrand; 
+            year = newYear;  
+        }
+
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Car: {brand} {model}, Год: {year}, Дверей: {doors}, VIN: {vin}");
+        }
+    }
+
+    public class Product
+    {
+        protected string name;
+        protected decimal price;
+        protected DateTime createdDate;
+
+        public Product(string name, decimal price)
+        {
+            this.name = name;
+            this.price = price;
+            this.createdDate = DateTime.Now;
+            Console.WriteLine($"Product({name}, {price}) создан");
+        }
+
+        public Product(string name, decimal price, DateTime createdDate)
+        {
+            this.name = name;
+            this.price = price;
+            this.createdDate = createdDate;
+            Console.WriteLine($"Product({name}, {price}, {createdDate}) создан");
+        }
+
+        public virtual void DisplayInfo()
+        {
+            Console.WriteLine($"Product: {name}, Цена: {price:C}, Создан: {createdDate:dd.MM.yyyy}");
+        }
+    }
+
+    public class Electronics : Product
+    {
+        private string warranty;
+        private string manufacturer;
+
+        public Electronics(string name, decimal price, string manufacturer)
+            : base(name, price)
+        {
+            this.manufacturer = manufacturer;
+            this.warranty = "1 год";
+            Console.WriteLine($"Electronics({name}, {price}, {manufacturer}) создан");
+        }
+
+        public Electronics(string name, decimal price, string manufacturer, string warranty, DateTime createdDate)
+            : base(name, price, createdDate)
+        {
+            this.manufacturer = manufacturer;
+            this.warranty = warranty;
+            Console.WriteLine($"Electronics с гарантией {warranty} создан");
+        }
+
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Electronics: {name}, Производитель: {manufacturer}");
+            Console.WriteLine($"  Цена: {price:C}, Гарантия: {warranty}, Создан: {createdDate:dd.MM.yyyy}");
+        }
+    }
+
+    public class Animal
+    {
+        protected string species;
+        protected int age;
+        protected bool isAlive;
+
+        public Animal(string species, int age)
+        {
+            this.species = species;
+            this.age = age;
+            this.isAlive = true;
+            Console.WriteLine($"Animal {species} создан, возраст: {age}");
+        }
+
+
+        protected virtual void InitializeAnimal()
+        {
+            Console.WriteLine($"Инициализация животного: {species}");
+        }
+
+        public virtual void DisplayInfo()
+        {
+            string status = isAlive ? "жив" : "не жив";
+            Console.WriteLine($"Animal: {species}, Возраст: {age}, Статус: {status}");
+        }
+    }
+
+    public class Dog : Animal
+    {
+        private string breed;
+        private string owner;
+
+        public Dog(string breed, int age, string owner)
+            : base("Собака", age) 
+        {
+            this.breed = breed;
+            this.owner = owner;
+            InitializeAnimal();
+            Console.WriteLine($"Dog {breed} создан, владелец: {owner}");
+        }
+
+        protected override void InitializeAnimal()
+        {
+            base.InitializeAnimal();
+            Console.WriteLine($"Дополнительная инициализация для собаки породы {breed}");
+        }
+
+        public override void DisplayInfo()
+        {
+            base.DisplayInfo();
+            Console.WriteLine($"  Порода: {breed}, Владелец: {owner}");
+        }
+    }
+
+    public class A
+    {
+        protected int valueA;
+
+        public A()
+        {
+            valueA = 1;
+            Console.WriteLine("Конструктор A()");
+        }
+
+        public A(int value) : this()
+        {
+            valueA = value;
+            Console.WriteLine($"Конструктор A({value})");
+        }
+    }
+
+    public class B : A
+    {
+        protected int valueB;
+
+        public B() : base()
+        {
+            valueB = 2;
+            Console.WriteLine("Конструктор B()");
+        }
+
+        public B(int valueA, int valueB) : base(valueA)
+        {
+            this.valueB = valueB;
+            Console.WriteLine($"Конструктор B({valueA}, {valueB})");
+        }
+    }
+
+    public class C : B
+    {
+        private int valueC;
+
+        public C() : base()
+        {
+            valueC = 3;
+            Console.WriteLine("Конструктор C()");
+        }
+
+        public C(int valueA, int valueB, int valueC) : base(valueA, valueB)
+        {
+            this.valueC = valueC;
+            Console.WriteLine($"Конструктор C({valueA}, {valueB}, {valueC})");
+        }
+
+        public void DisplayValues()
+        {
+            Console.WriteLine($"Values: A={valueA}, B={valueB}, C={valueC}");
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("ДЕМОНСТРАЦИЯ ВЫЗОВА КОНСТРУКТОРОВ БАЗОВОГО КЛАССА");
+            Console.WriteLine("=================================================\n");
+
+            while (true)
+            {
+                Console.WriteLine("\nВыберите демонстрацию (1-15):");
+                Console.WriteLine("1. Вызов конструктора базового класса через base");
+                Console.WriteLine("2. Передача параметров в базовый конструктор");
+                Console.WriteLine("3. Цепочка конструкторов с вызовом базового");
+                Console.WriteLine("4. Использование полей/методов базового класса");
+                Console.WriteLine("5. Перегруженные конструкторы с вызовом базового");
+                Console.WriteLine("6. Передача параметров при создании производного");
+                Console.WriteLine("7. Вызов конструктора для инициализации");
+                Console.WriteLine("8. Инициализация поля базового класса в производном");
+                Console.WriteLine("9. Конструктор с разными типами параметров");
+                Console.WriteLine("10. Конструктор по умолчанию и с параметрами");
+                Console.WriteLine("11. Использование this и base в конструкторах");
+                Console.WriteLine("12. Логика инициализации в базовом конструкторе");
+                Console.WriteLine("13. Наследование свойств через конструктор");
+                Console.WriteLine("14. Инициализация полей базового конструктора");
+                Console.WriteLine("15. Цепочка вызова конструкторов с наследованием");
+                Console.WriteLine("0. Все демонстрации");
+
+                Console.Write("Ваш выбор: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DemonstrateBaseConstructorCall();
+                        break;
+                    case "2":
+                        DemonstrateParameterPassing();
+                        break;
+                    case "3":
+                        DemonstrateConstructorChaining();
+                        break;
+                    case "4":
+                        DemonstrateBaseFieldsMethods();
+                        break;
+                    case "5":
+                        DemonstrateOverloadedConstructors();
+                        break;
+                    case "6":
+                        DemonstrateParameterTransfer();
+                        break;
+                    case "7":
+                        DemonstrateInitializationCall();
+                        break;
+                    case "8":
+                        DemonstrateBaseFieldInitialization();
+                        break;
+                    case "9":
+                        DemonstrateDifferentParameterTypes();
+                        break;
+                    case "10":
+                        DemonstrateDefaultAndParameterized();
+                        break;
+                    case "11":
+                        DemonstrateThisAndBase();
+                        break;
+                    case "12":
+                        DemonstrateInitializationLogic();
+                        break;
+                    case "13":
+                        DemonstratePropertyInheritance();
+                        break;
+                    case "14":
+                        DemonstrateBaseFieldInitInDerived();
+                        break;
+                    case "15":
+                        DemonstrateConstructorChainInheritance();
+                        break;
+                    case "0":
+                        DemonstrateAll();
+                        break;
+                    default:
+                        Console.WriteLine("Неверный выбор, попробуйте снова");
+                        break;
+                }
+            }
+        }
+
+        static void DemonstrateBaseConstructorCall()
+        {
+            Console.WriteLine("\n=== 1. Вызов конструктора базового класса через base ===");
+
+            Student student1 = new Student("Иван", 20, "Информатика");
+            student1.DisplayInfo();
+        }
+
+        static void DemonstrateParameterPassing()
+        {
+            Console.WriteLine("\n=== 2. Передача параметров в базовый конструктор ===");
+
+            Student student2 = new Student("Мария", 22, "PERS123", "STU456", "Математика");
+            student2.DisplayInfo();
+        }
+
+        static void DemonstrateConstructorChaining()
+        {
+            Console.WriteLine("\n=== 3. Цепочка конструкторов с вызовом базового ===");
+
+            Vehicle vehicle = new Vehicle("Toyota", 2022, "VIN123456789");
+            vehicle.DisplayInfo();
+        }
+
+        static void DemonstrateBaseFieldsMethods()
+        {
+            Console.WriteLine("\n=== 4. Использование полей/методов базового класса ===");
+
+            Student student = new Student("Петр", 21, "Физика");
+            student.DisplayInfo(); 
+        }
+
+        static void DemonstrateOverloadedConstructors()
+        {
+            Console.WriteLine("\n=== 5. Перегруженные конструкторы с вызовом базового ===");
+
+            Student student1 = new Student("Анна", 19, "Химия");
+            Student student2 = new Student("Сергей", 23, "Биология", 4.5);
+
+            student1.DisplayInfo();
+            student2.DisplayInfo();
+        }
+
+        static void DemonstrateParameterTransfer()
+        {
+            Console.WriteLine("\n=== 6. Передача параметров при создании производного ===");
+
+            Electronics electronics = new Electronics("Смартфон", 29999.99m, "Samsung");
+            electronics.DisplayInfo();
+        }
+
+        static void DemonstrateInitializationCall()
+        {
+            Console.WriteLine("\n=== 7. Вызов конструктора для инициализации ===");
+
+            Car car = new Car("Honda", "Civic", 2023, 4);
+            car.DisplayInfo();
+        }
+
+        static void DemonstrateBaseFieldInitialization()
+        {
+            Console.WriteLine("\n=== 8. Инициализация поля базового класса в производном ===");
+
+            Student student = new Student("Дмитрий", 24, "История");
+            Console.WriteLine("До изменения:");
+            student.DisplayInfo();
+
+            student.SetName("Дмитрий Иванов");
+            Console.WriteLine("После изменения:");
+            student.DisplayInfo();
+        }
+
+        static void DemonstrateDifferentParameterTypes()
+        {
+            Console.WriteLine("\n=== 9. Конструктор с разными типами параметров ===");
+
+            Electronics electronics1 = new Electronics("Ноутбук", 45000m, "Lenovo");
+            Electronics electronics2 = new Electronics("Планшет", 25000m, "Apple", "2 года",
+                new DateTime(2024, 1, 15));
+
+            electronics1.DisplayInfo();
+            electronics2.DisplayInfo();
+        }
+
+        static void DemonstrateDefaultAndParameterized()
+        {
+            Console.WriteLine("\n=== 10. Конструктор по умолчанию и с параметрами ===");
+
+            Person person1 = new Person();
+            Person person2 = new Person("Ольга", 30); 
+
+            person1.DisplayInfo();
+            person2.DisplayInfo();
+        }
+
+        static void DemonstrateThisAndBase()
+        {
+            Console.WriteLine("\n=== 11. Использование this и base в конструкторах ===");
+
+            Car car1 = new Car(); 
+            Car car2 = new Car("Ford", "Focus"); 
+            Car car3 = new Car("BMW", "X5", 2024, 5); 
+
+            car1.DisplayInfo();
+            car2.DisplayInfo();
+            car3.DisplayInfo();
+        }
+
+        static void DemonstrateInitializationLogic()
+        {
+            Console.WriteLine("\n=== 12. Логика инициализации в базовом конструкторе ===");
+
+            Person person = new Person("Алексей", 35);
+            person.DisplayInfo(); 
+        }
+
+        static void DemonstratePropertyInheritance()
+        {
+            Console.WriteLine("\n=== 13. Наследование свойств через конструктор ===");
+
+            Dog dog = new Dog("Лабрадор", 3, "Иван");
+            dog.DisplayInfo();
+        }
+
+        static void DemonstrateBaseFieldInitInDerived()
+        {
+            Console.WriteLine("\n=== 14. Инициализация полей базового конструктора ===");
+
+            Car car = new Car("Kia", "Rio");
+            Console.WriteLine("До инициализации:");
+            car.DisplayInfo();
+
+            car.InitializeVehicle("Hyundai", 2024);
+            Console.WriteLine("После инициализации:");
+            car.DisplayInfo();
+        }
+
+        static void DemonstrateConstructorChainInheritance()
+        {
+            Console.WriteLine("\n=== 15. Цепочка вызова конструкторов с наследованием ===");
+
+            C obj1 = new C(); 
+            obj1.DisplayValues();
+
+            C obj2 = new C(10, 20, 30); 
+            obj2.DisplayValues();
+        }
+
+        static void DemonstrateAll()
+        {
+            Console.WriteLine("\n=== ПОЛНАЯ ДЕМОНСТРАЦИЯ ВСЕХ ВИДОВ ВЫЗОВА КОНСТРУКТОРОВ ===\n");
+
+            DemonstrateBaseConstructorCall();
+            DemonstrateParameterPassing();
+            DemonstrateConstructorChaining();
+            DemonstrateBaseFieldsMethods();
+            DemonstrateOverloadedConstructors();
+            DemonstrateParameterTransfer();
+            DemonstrateInitializationCall();
+            DemonstrateBaseFieldInitialization();
+            DemonstrateDifferentParameterTypes();
+            DemonstrateDefaultAndParameterized();
+            DemonstrateThisAndBase();
+            DemonstrateInitializationLogic();
+            DemonstratePropertyInheritance();
+            DemonstrateBaseFieldInitInDerived();
+            DemonstrateConstructorChainInheritance();
+
+            Console.WriteLine("\n=== ВСЕ ДЕМОНСТРАЦИИ ЗАВЕРШЕНЫ ===");
+        }
+    }
+}
